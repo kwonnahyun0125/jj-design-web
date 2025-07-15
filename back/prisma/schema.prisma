@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 관리자 계정
+model AdminUser {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  password   String // bcrypt 암호화 저장
+  portfolios Portfolio[] // 포트폴리오 관리자가 등록
+}
+
+// 상담 요청
+model Inquiry {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+// 고객 후기
+model Review {
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String
+  rating    Int // 별점 (1~5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 포트폴리오
+model Portfolio {
+  id        Int      @id @default(autoincrement())
+  title     String
+  imageUrl  String
+  content   String
+  createdAt DateTime @default(now())
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  adminUserId Int
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+}
+
+// 포트폴리오 카테고리
+model Category {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  portfolios Portfolio[]
+}
+
+// 블로그 (임시)
+model BlogPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+}

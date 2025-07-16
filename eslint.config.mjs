@@ -103,13 +103,6 @@ export default defineConfig([
       ],
     },
   },
-  // JSON 설정
-  {
-    files: ['**/*.json'],
-    plugins: { json },
-    extends: ['json/recommended'],
-  },
-
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
 ]);

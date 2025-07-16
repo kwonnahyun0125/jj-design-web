@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const verifyEnv = (name: string): any => {
+const verifyEnv = (name: string): unknown => {
   const value = process.env[name];
   if (!value) {
     throw new Error(`missing env[${name}]`);
@@ -10,8 +10,8 @@ const verifyEnv = (name: string): any => {
   return value;
 };
 
-const ENV = {
-  PORT: verifyEnv('PORT'),
+const env = {
+  port: verifyEnv('PORT'),
 };
 
-export default ENV;
+export default env;

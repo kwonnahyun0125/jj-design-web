@@ -1,5 +1,5 @@
 import os from 'os';
-import ENV from '../utils/env-util';
+import env from '../utils/env-util';
 
 const getLocalIPAddress = (): string => {
   const interfaces = os.networkInterfaces();
@@ -13,10 +13,10 @@ const getLocalIPAddress = (): string => {
   return '127.0.0.1';
 };
 
-export const listenHandler = (error?: Error): void => {
+export const listenHandler = (_error?: Error): void => {
   const protocol = 'http';
   const ip = getLocalIPAddress();
-  const port = ENV.PORT;
+  const port = env.port;
 
   console.log(`server is running at ${protocol}://${ip}:${port}`);
 };

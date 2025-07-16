@@ -4,10 +4,10 @@ import { isErrorInstanceOfHttp, isErrorInstanceOfNode } from '../utils/error-uti
 import { getIp, getMethod, getUrl } from '../utils/from-util';
 
 export const globalErrorHandler: ErrorRequestHandler = async (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   let status = 500;
   let message = 'Internal Server Error';

@@ -90,7 +90,19 @@ export default defineConfig([
       ],
     },
   },
-
+// 언더스코어로 시작하는 변수, 매개변수 무시
+  {
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
   // JSON 설정
   {
     files: ['**/*.json'],

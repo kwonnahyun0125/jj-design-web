@@ -7,7 +7,14 @@
     "migrate": "npx prisma migrate dev",
     "build": "rm -rf dist/* && tsc",
     "start": "node dist/app.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node --files src/app.ts"
+    "dev": "nodemon --watch src --ext ts --exec ts-node --files src/app.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -23,6 +30,8 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.1",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^6.11.1",

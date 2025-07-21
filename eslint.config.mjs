@@ -1,12 +1,13 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import json from '@eslint/json';
 import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
+  ...tseslint.configs.recommended,
+
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     plugins: { js },
@@ -16,13 +17,8 @@ export default defineConfig([
     },
   },
 
-  // TypeScript 설정
-  tseslint.config(
-    tseslint.configs.recommended,
-  ),
-
-// 상수 파일
-{
+  // 상수 파일
+  {
     files: ['src/constants.ts'],
     rules: {
       '@typescript-eslint/naming-convention': [
@@ -90,7 +86,7 @@ export default defineConfig([
       ],
     },
   },
-// 언더스코어로 시작하는 변수, 매개변수 무시
+  // 언더스코어로 시작하는 변수, 매개변수 무시
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
     rules: {

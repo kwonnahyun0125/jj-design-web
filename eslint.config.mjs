@@ -6,8 +6,6 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
-  ...tseslint.configs.recommended,
-
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     plugins: { js },
@@ -16,6 +14,9 @@ export default defineConfig([
       globals: globals.node,
     },
   },
+
+  // TypeScript 설정
+  tseslint.config(tseslint.configs.recommended),
 
   // 상수 파일
   {

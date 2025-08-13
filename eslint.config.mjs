@@ -55,28 +55,25 @@ export default defineConfig([
           selector: 'class',
           format: ['PascalCase'],
         },
-        // 인터페이스 -> PascalCase + I prefix
+        // 인터페이스 -> PascalCase
         {
           selector: 'interface',
           format: ['PascalCase'],
-          prefix: ['I'],
         },
-        // enum -> PascalCase + Enum suffix
+        // enum -> PascalCase
         {
           selector: 'enum',
           format: ['PascalCase'],
-          suffix: ['Enum'],
         },
         // 타입 별칭 -> PascalCase
         {
           selector: 'typeAlias',
           format: ['PascalCase'],
         },
-        // 타입 파라미터 -> PascalCase + T prefix
+        // 타입 파라미터 -> PascalCase
         {
           selector: 'typeParameter',
           format: ['PascalCase'],
-          prefix: ['T'],
         },
         // 객체 리터럴 키 값 -> camelCase
         {

@@ -1,9 +1,9 @@
-export interface ISuccessResponse<T> {
+export interface SuccessResponse<T> {
   success: true;
   data: T;
 }
 
-export interface IErrorResponse {
+export interface ErrorResponse {
   success: false;
   error: {
     status: number;

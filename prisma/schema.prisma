@@ -1,0 +1,226 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phoneNumber  String?   @db.VarChar(20)
+  role         String    @default("admin") // admin / manager / viewer
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  isdeleted    Boolean   @default(false)
+
+  adminLogs AdminLog[]
+}
+
+model AdminLog {
+  id          Int      @id @default(autoincrement())
+  adminId     Int
+  action      String // e.g., "create", "update", "delete"
+  description String?
+  createdAt   DateTime @default(now())
+
+  admin Admin @relation(fields: [adminId], references: [id])
+
+  @@map("admin_logs")
+}
+
+model Project {
+  id            Int       @id @default(autoincrement())
+  title         String
+  areaSize      Int
+  tpey          TypeEnum?
+  description   String?
+  durationWeeks Int?
+  reviews       String?
+  imageUrl      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isdeleted     Boolean   @default(false)
+
+  projectTags   ProjectTag[]
+  images        Image[]
+  projectImages ProjectImage[]
+
+  @@map("projects")
+}
+
+enum TypeEnum {
+  RESIDENCE // 주거공간
+  MERCANTILE // 상업공간
+  ARCHITECTURE // 건축물
+}
+
+model ProjectImage {
+  projectId Int
+  imageId   Int
+
+  project Project @relation(fields: [projectId], references: [id])
+  image   Image   @relation(fields: [imageId], references: [id])
+
+  @@id([imageId, projectId])
+  @@map("project_images")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  projects ProjectTag[]
+
+  @@map("tags")
+}
+
+model ProjectTag {
+  projectId Int
+  tagId     Int
+
+  project Project @relation(fields: [projectId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([projectId, tagId])
+  @@index([tagId])
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isdeleted   Boolean  @default(false)
+
+  images        Image[]
+  companyImages CompanyImage[]
+
+  @@map("companies")
+}
+
+model CompanyImage {
+  companyId Int
+  imageId   Int
+
+  image   Image   @relation(fields: [imageId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@id([imageId, companyId])
+  @@map("company_images")
+}
+
+model Image {
+  id          Int      @id @default(autoincrement())
+  url         String   @unique
+  projectId   Int?
+  companyId   Int?
+  showroomId  Int?
+  furnitureId Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isdeleted   Boolean  @default(false)
+
+  project         Project?         @relation(fields: [projectId], references: [id])
+  company         Company?         @relation(fields: [companyId], references: [id])
+  showroom        Showroom?        @relation(fields: [showroomId], references: [id])
+  Furniture       Furniture?       @relation(fields: [furnitureId], references: [id])
+  projectImages   ProjectImage[]
+  companyImages   CompanyImage[]
+  showroomImages  ShowroomImage[]
+  furnitureImages FurnitureImage[]
+
+  @@map("image_urls")
+}
+
+model ConsultingRequest {
+  id           Int      @id @default(autoincrement())
+  customerName String   @map("customer_name") @db.VarChar(100)
+  phoneNumber  String   @map("phone_number") @db.VarChar(20)
+  email        String   @db.VarChar(100)
+  address      String   @db.VarChar(255)
+  type         String   @db.VarChar(100)
+  areaSize     String   @map("area_size") @db.VarChar(50)
+  isAgreeTerms Boolean  @default(false) @map("is_agree_terms")
+  createdAt    DateTime @default(now())
+}
+
+// 운영기간과 시간에 대해 논의
+model Showroom {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  address         String   @db.VarChar(255)
+  phoneNumber     String?  @db.VarChar(20)
+  description     String?
+  introText       String?  @map("intro_text") @db.Text
+  mapUrl          String?  @map("map_url") @db.Text
+  imageUrl        String?
+  openMinutes     Int?
+  closeMinutes    Int?
+  weeklyOpenDays  String?  @map("weekly_open_days") @db.Text // e.g., "Mon,Tue,Wed,Thu,Fri"
+  weeklyCloseDays String?  @map("weekly_close_days") @db.Text // e.g., "Sat,Sun"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isdeleted       Boolean  @default(false)
+
+  images         Image[]
+  showroomImages ShowroomImage[]
+
+  @@map("showrooms")
+}
+
+model ShowroomImage {
+  showroomId Int
+  showroom   Showroom @relation(fields: [showroomId], references: [id])
+  imageId    Int
+
+  image Image @relation(fields: [imageId], references: [id])
+
+  @@id([showroomId, imageId])
+  @@map("showroom_images")
+}
+
+model Furniture {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  address     String   @db.VarChar(255)
+  phoneNumber String?  @db.VarChar(20)
+  description String?
+  introText   String?  @map("intro_text") @db.Text
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isdeleted   Boolean  @default(false)
+
+  images          Image[]
+  furnitureImages FurnitureImage[]
+
+  @@map("furnitures")
+}
+
+model FurnitureImage {
+  furnitureId Int
+  imageId     Int
+
+  furniture Furniture @relation(fields: [furnitureId], references: [id])
+  image     Image     @relation(fields: [imageId], references: [id])
+
+  @@id([furnitureId, imageId])
+  @@map("furniture_images")
+}

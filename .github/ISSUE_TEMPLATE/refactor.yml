@@ -1,0 +1,38 @@
+name: '🛠 Refactor'
+description: '코드 리팩토링/구조 개선 작업'
+title: '[REFACTOR] '
+labels: ['refactor']
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: '개선 대상'
+      description: '리팩토링이 필요한 코드나 모듈'
+      placeholder: '예: UserService, utils/helper.ts'
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: '문제점'
+      description: '현재 코드에서 불편하거나 비효율적인 부분'
+      placeholder: '예: 중복 코드가 많음, 테스트하기 어려움'
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: '개선 방향'
+      description: '어떤 방식으로 개선할 수 있을지 제안해주세요.'
+      placeholder: '예: 공통 모듈로 분리, 테스트 코드 추가'
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: '체크리스트'
+      options:
+        - label: '관련 문서/이슈 확인'
+        - label: '리팩토링 후 기능 정상 동작 확인'
+        - label: 'PR 시 테스트 코드 작성'

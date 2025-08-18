@@ -1,0 +1,50 @@
+name: "🐛 Bug Report"
+description: "버그 발생 시 사용하는 템플릿"
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "버그 설명"
+      description: "어떤 문제가 발생했는지 설명해주세요."
+      placeholder: "예: 회원가입 버튼 클릭 시 500 오류 발생"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "재현 방법"
+      description: "어떤 과정을 거치면 문제가 발생하나요?"
+      placeholder: |
+        1. 회원가입 페이지로 이동
+        2. 이메일 입력 후 버튼 클릭
+        3. 500 오류 발생
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "기대 동작"
+      description: "정상적으로 동작했다면 어떤 결과가 나와야 하나요?"
+      placeholder: "회원가입이 정상적으로 완료되어야 한다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "로그/스크린샷"
+      description: "문제를 설명할 수 있는 자료를 첨부해주세요."
+      placeholder: "에러 메시지, 콘솔 로그, 스크린샷 등"
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "체크리스트"
+      options:
+        - label: "관련 문서/이슈 확인"
+        - label: "로컬에서 재현 확인"
+        - label: "PR 시 테스트 코드 작성"

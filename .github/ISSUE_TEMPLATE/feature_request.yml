@@ -1,0 +1,38 @@
+name: "🚀 Feature Request"
+description: "새로운 기능을 제안할 때 사용하는 템플릿"
+title: "[FEAT] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: "목적"
+      description: "이 기능이 왜 필요한가요?"
+      placeholder: "예: 사용자 경험 향상"
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: "제안 내용"
+      description: "구체적으로 어떤 기능을 원하시나요?"
+      placeholder: "예: 계약 목록에서 페이지네이션 추가"
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: "기대 효과"
+      description: "이 기능이 추가되면 어떤 점이 좋아지나요?"
+      placeholder: "예: UX 개선, 성능 최적화"
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "체크리스트"
+      options:
+        - label: "관련 문서/이슈 확인"
+        - label: "구현 범위 명확히 정의"
+        - label: "PR 시 테스트 코드 작성"

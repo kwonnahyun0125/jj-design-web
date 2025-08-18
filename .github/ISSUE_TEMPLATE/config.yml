@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 프로젝트 위키
+    url: https://github.com/USERNAME/REPO/wiki
+    about: "이슈 생성 전에 프로젝트 문서를 먼저 확인해주세요."

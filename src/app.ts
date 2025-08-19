@@ -4,6 +4,7 @@ import { listenHandler } from './handlers/listen-handler';
 import { globalErrorHandler } from './handlers/global-error-handler';
 import { notFoundHandler } from './handlers/not-found-handler';
 import rootRouter from './routers/root-router';
+import projectRouter from './routers/projects-router';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ROUTERS
 app.use(rootRouter);
+app.use(projectRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

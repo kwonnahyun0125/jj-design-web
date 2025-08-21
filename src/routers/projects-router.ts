@@ -1,8 +1,9 @@
 import express from 'express';
-import { createProject } from '../controllers/project-controller';
+import { createProject, getProjects } from '../controllers/project-controller';
 
 const projects = express.Router();
 
 projects.post('/projects', createProject);
+projects.get('/projects', getProjects);
 
 export default projects;

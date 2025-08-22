@@ -1,12 +1,60 @@
 import prisma from '../config/db';
-import db from '../config/db';
 import { Prisma } from '../generated/prisma';
-import { GetProjectsQuery } from '../services/project-service';
+import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
 
 export class ProjectRepository {
-  async createProject(data: Prisma.ProjectCreateInput) {
-    return await db.project.create({ data });
+  async createProject(data: CreateProjectDto) {
+    const {
+      title,
+      areaSize,
+      type,
+      description,
+      durationWeeks,
+      reviews,
+      imageUrl,
+      projectTags,
+      projectImages,
+    } = data;
+
+    return await prisma.project.create({
+      data: {
+        title,
+        areaSize,
+        type,
+        description,
+        durationWeeks,
+        reviews,
+        imageUrl,
+        projectTags: projectTags
+          ? {
+              create: projectTags.map((name) => ({
+                tag: {
+                  connectOrCreate: {
+                    where: { name },
+                    create: { name },
+                  },
+                },
+              })),
+            }
+          : undefined,
+
+        projectImages: projectImages
+          ? {
+              create: projectImages.map((url) => ({
+                image: {
+                  create: { url },
+                },
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        projectTags: { include: { tag: true } },
+        projectImages: { include: { image: true } },
+      },
+    });
   }
+
   async findProjects(query: GetProjectsQuery) {
     const and: Prisma.ProjectWhereInput[] = [{ isdeleted: false }];
 

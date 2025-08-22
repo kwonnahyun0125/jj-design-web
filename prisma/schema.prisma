@@ -25,7 +25,7 @@ model Admin {
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  isdeleted    Boolean   @default(false)
+  isDeleted    Boolean   @default(false)
 
   adminLogs AdminLog[]
 }
@@ -46,7 +46,7 @@ model Project {
   id            Int          @id @default(autoincrement())
   title         String
   areaSize      Int
-  type          ProjectType?
+  type          ProjectType
   description   String?
   durationWeeks Int?
   reviews       String?
@@ -109,7 +109,7 @@ model Company {
   instagramUrl String?  @map("instagram_url")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  isdeleted    Boolean  @default(false)
+  isDeleted    Boolean  @default(false)
 
   images        Image[]
   companyImages CompanyImage[]
@@ -130,19 +130,19 @@ model CompanyImage {
 
 model Image {
   id          Int      @id @default(autoincrement())
-  url         String   @unique
+  url         String
   projectId   Int?
   companyId   Int?
   showroomId  Int?
   furnitureId Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  isdeleted   Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
 
   project         Project?         @relation(fields: [projectId], references: [id])
   company         Company?         @relation(fields: [companyId], references: [id])
   showroom        Showroom?        @relation(fields: [showroomId], references: [id])
-  Furniture       Furniture?       @relation(fields: [furnitureId], references: [id])
+  furniture       Furniture?       @relation(fields: [furnitureId], references: [id])
   projectImages   ProjectImage[]
   companyImages   CompanyImage[]
   showroomImages  ShowroomImage[]
@@ -178,7 +178,7 @@ model Showroom {
   weeklyCloseDays String?  @map("weekly_close_days") @db.Text // e.g., "Sat,Sun"
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  isdeleted       Boolean  @default(false)
+  isDeleted       Boolean  @default(false)
 
   images         Image[]
   showroomImages ShowroomImage[]
@@ -207,7 +207,7 @@ model Furniture {
   imageUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  isdeleted   Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
 
   images          Image[]
   furnitureImages FurnitureImage[]
@@ -233,7 +233,7 @@ model Notice {
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isdeleted Boolean  @default(false)
+  isDeleted Boolean  @default(false)
 
   @@map("notices")
 }

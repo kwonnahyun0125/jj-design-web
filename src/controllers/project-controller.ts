@@ -69,8 +69,8 @@ function toBool(v: unknown): boolean | undefined {
 
 type ProjectType = 'RESIDENCE' | 'MERCANTILE' | 'ARCHITECTURE';
 
-function toProjectType(v: unknown): ProjectType | undefined {
-  if (typeof v !== 'string') return undefined;
+function toProjectType(v: unknown): ProjectType {
+  if (typeof v !== 'string') return 'RESIDENCE';
   const allowed = ['RESIDENCE', 'MERCANTILE', 'ARCHITECTURE'] as const;
-  return allowed.includes(v as (typeof allowed)[number]) ? (v as ProjectType) : undefined;
+  return allowed.includes(v as (typeof allowed)[number]) ? (v as ProjectType) : 'RESIDENCE';
 }

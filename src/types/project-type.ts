@@ -1,4 +1,4 @@
-import { ProjectType } from '../generated/prisma';
+import { ProjectType } from '@prisma/client';
 export interface CreateProjectDto {
   title: string;
   areaSize: number;

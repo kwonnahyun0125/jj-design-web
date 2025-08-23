@@ -56,7 +56,6 @@ model Project {
   isdeleted     Boolean      @default(false)
 
   projectTags   ProjectTag[]
-  images        Image[]
   projectImages ProjectImage[]
 
   @@map("projects")
@@ -111,7 +110,6 @@ model Company {
   updatedAt    DateTime @updatedAt
   isDeleted    Boolean  @default(false)
 
-  images        Image[]
   companyImages CompanyImage[]
 
   @@map("companies")
@@ -131,18 +129,10 @@ model CompanyImage {
 model Image {
   id          Int      @id @default(autoincrement())
   url         String
-  projectId   Int?
-  companyId   Int?
-  showroomId  Int?
-  furnitureId Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isDeleted   Boolean  @default(false)
 
-  project         Project?         @relation(fields: [projectId], references: [id])
-  company         Company?         @relation(fields: [companyId], references: [id])
-  showroom        Showroom?        @relation(fields: [showroomId], references: [id])
-  furniture       Furniture?       @relation(fields: [furnitureId], references: [id])
   projectImages   ProjectImage[]
   companyImages   CompanyImage[]
   showroomImages  ShowroomImage[]
@@ -180,7 +170,6 @@ model Showroom {
   updatedAt       DateTime @updatedAt
   isDeleted       Boolean  @default(false)
 
-  images         Image[]
   showroomImages ShowroomImage[]
 
   @@map("showrooms")
@@ -209,7 +198,6 @@ model Furniture {
   updatedAt   DateTime @updatedAt
   isDeleted   Boolean  @default(false)
 
-  images          Image[]
   furnitureImages FurnitureImage[]
 
   @@map("furnitures")

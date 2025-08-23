@@ -1,5 +1,5 @@
 import prisma from '../config/db';
-import { Prisma } from '@prisma/client';
+import { Prisma, ProjectType } from '@prisma/client';
 import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
 
 export class ProjectRepository {
@@ -16,11 +16,11 @@ export class ProjectRepository {
       projectImages,
     } = data;
 
-    return await prisma.project.create({
+    return prisma.project.create({
       data: {
         title,
         areaSize,
-        type,
+        type, // enum 문자열 그대로 사용 가능
         description,
         durationWeeks,
         reviews,
@@ -41,16 +41,10 @@ export class ProjectRepository {
         projectImages: projectImages
           ? {
               create: projectImages.map((url) => ({
-                image: {
-                  create: { url },
-                },
+                image: { create: { url } },
               })),
             }
           : undefined,
-      },
-      include: {
-        projectTags: { include: { tag: true } },
-        projectImages: { include: { image: true } },
       },
     });
   }
@@ -69,11 +63,10 @@ export class ProjectRepository {
     }
 
     if (query.type) {
-      and.push({ type: query.type });
+      and.push({ type: query.type as unknown as ProjectType });
     }
 
     if (query.tagIds && query.tagIds.length > 0) {
-      // 모든 tagIds를 포함하는 프로젝트
       and.push({
         projectTags: {
           every: { tagId: { in: query.tagIds } },
@@ -95,13 +88,49 @@ export class ProjectRepository {
         orderBy: { createdAt: 'desc' },
         skip,
         take: pageSize,
-        include: {
-          projectImages: query.includeImages ? { include: { image: true } } : false,
-          projectTags: query.includeTags ? { include: { tag: true } } : false,
-        },
       }),
     ]);
 
     return { page, pageSize, total, rows };
+  }
+
+  async findProjectById(id: number) {
+    return prisma.project.findFirst({
+      where: { id, isdeleted: false },
+    });
+  }
+
+  async softDeleteProject(id: number) {
+    const exists = await prisma.project.findFirst({
+      where: { id, isdeleted: false },
+      select: { id: true },
+    });
+    if (!exists) {
+      throw new Error('PROJECT_NOT_FOUND');
+    }
+
+    await prisma.project.update({
+      where: { id },
+      data: { isdeleted: true },
+    });
+
+    return { id, deleted: true };
+  }
+
+  async updateProject(id: number, data: Prisma.ProjectUpdateInput) {
+    // 이미 삭제된 건 수정 불가 처리
+    const exists = await prisma.project.findFirst({
+      where: { id, isdeleted: false },
+      select: { id: true },
+    });
+    if (!exists) {
+      throw new Error('PROJECT_NOT_FOUND');
+    }
+
+    // 부분 업데이트
+    return prisma.project.update({
+      where: { id },
+      data,
+    });
   }
 }

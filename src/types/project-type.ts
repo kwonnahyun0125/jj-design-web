@@ -8,8 +8,6 @@ export interface CreateProjectDto {
   durationWeeks?: number;
   reviews?: string;
   imageUrl?: string;
-  projectTags?: string[];
-  projectImages?: string[];
 }
 
 export type UpdateProjectDto = Partial<CreateProjectDto>;

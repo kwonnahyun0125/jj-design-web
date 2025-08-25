@@ -4,51 +4,20 @@ import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
 
 export class ProjectRepository {
   async createProject(data: CreateProjectDto) {
-    const {
-      title,
-      areaSize,
-      type,
-      description,
-      durationWeeks,
-      reviews,
-      imageUrl,
-      projectTags,
-      projectImages,
-    } = data;
+    const { title, areaSize, type, description, durationWeeks, reviews, imageUrl } = data;
 
     return prisma.project.create({
       data: {
         title,
         areaSize,
-        type, // enum 문자열 그대로 사용 가능
+        type,
         description,
         durationWeeks,
         reviews,
         imageUrl,
-        projectTags: projectTags
-          ? {
-              create: projectTags.map((name) => ({
-                tag: {
-                  connectOrCreate: {
-                    where: { name },
-                    create: { name },
-                  },
-                },
-              })),
-            }
-          : undefined,
-
-        projectImages: projectImages
-          ? {
-              create: projectImages.map((url) => ({
-                image: { create: { url } },
-              })),
-            }
-          : undefined,
       },
     });
   }
-
   async findProjects(query: GetProjectsQuery) {
     const and: Prisma.ProjectWhereInput[] = [{ isdeleted: false }];
 

@@ -83,15 +83,11 @@ model ProjectImage {
 }
 
 model Image {
-  id          Int      @id @default(autoincrement())
-  url         String
-  projectId   Int?
-  companyId   Int?
-  showroomId  Int?
-  furnitureId Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isDeleted   Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
 
   projectImages   ProjectImage[]
   companyImages   CompanyImage[]

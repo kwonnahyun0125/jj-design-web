@@ -18,8 +18,9 @@ export class ProjectRepository {
       },
     });
   }
+
   async findProjects(query: GetProjectsQuery) {
-    const and: Prisma.ProjectWhereInput[] = [{ isdeleted: false }];
+    const and: Prisma.ProjectWhereInput[] = [{ isDeleted: false }];
 
     if (query.q) {
       and.push({
@@ -33,14 +34,6 @@ export class ProjectRepository {
 
     if (query.type) {
       and.push({ type: query.type as unknown as ProjectType });
-    }
-
-    if (query.tagIds && query.tagIds.length > 0) {
-      and.push({
-        projectTags: {
-          every: { tagId: { in: query.tagIds } },
-        },
-      });
     }
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -65,13 +58,13 @@ export class ProjectRepository {
 
   async findProjectById(id: number) {
     return prisma.project.findFirst({
-      where: { id, isdeleted: false },
+      where: { id, isDeleted: false },
     });
   }
 
   async softDeleteProject(id: number) {
     const exists = await prisma.project.findFirst({
-      where: { id, isdeleted: false },
+      where: { id, isDeleted: false },
       select: { id: true },
     });
     if (!exists) {
@@ -80,7 +73,7 @@ export class ProjectRepository {
 
     await prisma.project.update({
       where: { id },
-      data: { isdeleted: true },
+      data: { isDeleted: true },
     });
 
     return { id, deleted: true };
@@ -89,7 +82,7 @@ export class ProjectRepository {
   async updateProject(id: number, data: Prisma.ProjectUpdateInput) {
     // 이미 삭제된 건 수정 불가 처리
     const exists = await prisma.project.findFirst({
-      where: { id, isdeleted: false },
+      where: { id, isDeleted: false },
       select: { id: true },
     });
     if (!exists) {
@@ -103,3 +96,5 @@ export class ProjectRepository {
     });
   }
 }
+
+export default new ProjectRepository();

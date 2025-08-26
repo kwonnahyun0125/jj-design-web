@@ -12,7 +12,6 @@ export interface CreateProjectDto {
 
 export type UpdateProjectDto = Partial<CreateProjectDto>;
 
-// 조회 쿼리: tagIds → keywordIds 로 전환 (AND 필터)
 export type GetProjectsQuery = {
   page: number; // 1+
   pageSize: number; // 1~100
@@ -27,7 +26,7 @@ export type ProjectList = {
   title: string;
   areaSize: number;
   type: ProjectType;
-  createdAt: string; // ISO 문자열로 노출
+  createdAt: string;
   imageUrl?: string;
 };
 
@@ -37,7 +36,6 @@ export type ProjectDetail = ProjectList & {
   durationWeeks?: number;
   reviews?: string;
   images?: ProjectImage[];
-  // 기존 tags 제거 (Tag → Keyword 전환)
 };
 
 // 페이징 결과 공용 타입

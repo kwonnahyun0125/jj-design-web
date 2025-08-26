@@ -7,15 +7,7 @@ export class ProjectRepository {
     const { title, areaSize, type, description, durationWeeks, reviews, imageUrl } = data;
 
     return prisma.project.create({
-      data: {
-        title,
-        areaSize,
-        type,
-        description,
-        durationWeeks,
-        reviews,
-        imageUrl,
-      },
+      data: { title, areaSize, type, description, durationWeeks, reviews, imageUrl },
     });
   }
 
@@ -35,10 +27,8 @@ export class ProjectRepository {
     if (query.type) {
       and.push({ type: query.type as unknown as ProjectType });
     }
-
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const where: Prisma.ProjectWhereInput = { AND: and };
-
     const page = Math.max(1, query.page);
     const pageSize = Math.min(100, Math.max(1, query.pageSize));
     const skip = (page - 1) * pageSize;
@@ -56,6 +46,30 @@ export class ProjectRepository {
     return { page, pageSize, total, rows };
   }
 
+  // 상세 조회: 프로젝트 + 이미지(+키워드)
+  async findProjectDetail(id: number) {
+    return prisma.project.findFirst({
+      where: { id, isDeleted: false },
+      include: {
+        projectImages: {
+          // 이미지 삭제된 건 제외
+          where: {
+            image: { isDeleted: false },
+          },
+          include: {
+            image: true,
+            imageKeywords: {
+              include: {
+                keyword: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // (기존 단순 조회가 다른 곳에서 쓰이면 남겨두고, 상세 API는 findProjectDetail 사용)
   async findProjectById(id: number) {
     return prisma.project.findFirst({
       where: { id, isDeleted: false },
@@ -80,7 +94,6 @@ export class ProjectRepository {
   }
 
   async updateProject(id: number, data: Prisma.ProjectUpdateInput) {
-    // 이미 삭제된 건 수정 불가 처리
     const exists = await prisma.project.findFirst({
       where: { id, isDeleted: false },
       select: { id: true },
@@ -89,7 +102,6 @@ export class ProjectRepository {
       throw new Error('PROJECT_NOT_FOUND');
     }
 
-    // 부분 업데이트
     return prisma.project.update({
       where: { id },
       data,

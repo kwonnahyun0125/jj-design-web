@@ -7,11 +7,17 @@ import bucket from '../config/firebase-admin';
 
 export const uploadImages: RequestHandler = async (req, res, next) => {
   try {
+    // ✅ Firebase 비활성화 체크
+    if (!bucket) {
+      return res.status(503).json({ message: 'Firebase disabled' });
+    }
+
     const files = req.files as Express.Multer.File[];
 
-    if (!files) {
+    if (!files || files.length === 0) {
       throw new BadRequestError('파일이 존재하지 않습니다.');
     }
+
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
         const { originalname, buffer, mimetype } = file;
@@ -23,7 +29,7 @@ export const uploadImages: RequestHandler = async (req, res, next) => {
         const destination = `images/${firebaseFileName}`;
 
         // 파이어베이스에 파일 업로드
-        const fileRef = bucket.file(destination);
+        const fileRef = bucket!.file(destination);
         await fileRef.save(buffer, {
           metadata: { contentType: mimetype },
         });
@@ -38,7 +44,6 @@ export const uploadImages: RequestHandler = async (req, res, next) => {
       })
     );
 
-    // URL만 응답
     return res.status(200).json(successResponse(uploadedUrls));
   } catch (error) {
     next(error);

@@ -17,21 +17,21 @@ export const createProject: RequestHandler = async (req, res, next) => {
 // 목록조회
 export const getProjects: RequestHandler = async (req, res, next) => {
   try {
-    // 쿼리 파싱 (공용 유틸 사용)
     const page = toNumber(req.query.page, 1, 1);
     const pageSize = toNumber(req.query.pageSize, 12, 1, 100);
     const q = toString(req.query.q);
-    const type = parseProjectType(req.query.type) ?? 'RESIDENCE'; // 기본값 설정
+    const parsedType = parseProjectType(req.query.type); // 없으면 null/undefined
+
     const result = await projectService.getProjects({
       page,
       pageSize,
       q,
-      type,
+      ...(parsedType ? { type: parsedType } : {}),
     });
 
-    res.json(successResponse(result));
+    return res.json(successResponse(result));
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -48,14 +48,14 @@ export const getProjectById: RequestHandler = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid id' });
     }
 
-    const project = await projectService.getProjectById(id);
-    if (!project) {
+    const projectDetail = await projectService.getProjectById(id);
+    if (!projectDetail) {
       return res.status(404).json({ success: false, message: 'Not found' });
     }
 
-    res.json(successResponse(project));
+    return res.json(successResponse(projectDetail));
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -67,16 +67,15 @@ export const updateProject: RequestHandler = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Invalid id' });
     }
 
-    // 서비스 메서드 시그니처에 맞춰 body 전달
     type UpdateArg = Parameters<(typeof projectService)['updateProject']>[1];
     const project = await projectService.updateProject(id, req.body as UpdateArg);
 
-    res.json(successResponse(project));
+    return res.json(successResponse(project));
   } catch (error: unknown) {
     if (error instanceof Error && error.message === 'PROJECT_NOT_FOUND') {
       return res.status(404).json({ success: false, message: 'Not found' });
     }
-    next(error);
+    return next(error);
   }
 };
 
@@ -89,11 +88,11 @@ export const deleteProject: RequestHandler = async (req, res, next) => {
     }
 
     const result = await projectService.deleteProject(id);
-    res.json(successResponse(result));
+    return res.json(successResponse(result));
   } catch (error: unknown) {
     if (error instanceof Error && error.message === 'PROJECT_NOT_FOUND') {
       return res.status(404).json({ success: false, message: 'Not found' });
     }
-    next(error);
+    return next(error);
   }
 };

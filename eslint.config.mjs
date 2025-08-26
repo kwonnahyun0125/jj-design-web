@@ -80,6 +80,10 @@ export default defineConfig([
           selector: 'objectLiteralProperty',
           format: ['camelCase'],
           leadingUnderscore: 'allow',
+          filter: {
+            regex: '^(AND|OR|NOT)$',
+            match: false,
+          },
         },
       ],
     },

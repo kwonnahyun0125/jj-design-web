@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { successResponse } from '../utils/response-util';
 import { ProjectService } from '../services/project-service';
-import { toNumber, toString, toNumberArray, parseProjectType } from '../utils/query-parser';
+import { toNumber, toString, parseProjectType } from '../utils/query-parser';
 
 const projectService = new ProjectService();
 
@@ -22,14 +22,11 @@ export const getProjects: RequestHandler = async (req, res, next) => {
     const pageSize = toNumber(req.query.pageSize, 12, 1, 100);
     const q = toString(req.query.q);
     const type = parseProjectType(req.query.type) ?? 'RESIDENCE'; // 기본값 설정
-    const tagIds = toNumberArray(req.query.tagIds); // "1,2,3" → [1,2,3]
-
     const result = await projectService.getProjects({
       page,
       pageSize,
       q,
       type,
-      tagIds,
     });
 
     res.json(successResponse(result));

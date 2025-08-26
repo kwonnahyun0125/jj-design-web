@@ -5,7 +5,8 @@ import { globalErrorHandler } from './handlers/global-error-handler';
 import { notFoundHandler } from './handlers/not-found-handler';
 import rootRouter from './routers/root-router';
 import projectRouter from './routers/projects-router';
-import imageUploadRouter from './routers/image-upload-route';
+import imageUploadRouter from './routers/image-upload-router';
+import projectImageRouter from './routers/project-image-router';
 import keywordRouter from './routers/keyword-router';
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(rootRouter);
 app.use(projectRouter);
 app.use(imageUploadRouter);
+app.use(projectImageRouter);
 app.use(keywordRouter);
 
 // POST MIDDLEWARE

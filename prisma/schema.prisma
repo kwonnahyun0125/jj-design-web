@@ -58,8 +58,7 @@ model Project {
   projectImages ProjectImage[]
 
   @@index([isDeleted])
-  @@index([areaSize])
-  @@index([type])
+  @@index([type, areaSize])
   @@map("projects")
 }
 
@@ -70,6 +69,7 @@ enum ProjectType {
 }
 
 model ProjectImage {
+  id        Int      @id @default(autoincrement())
   projectId Int
   imageId   Int
 
@@ -78,7 +78,7 @@ model ProjectImage {
 
   imageKeywords ProjectImageKeyword[]
 
-  @@id([imageId, projectId])
+  @@unique([imageId, projectId]) 
   @@map("project_images")
 }
 

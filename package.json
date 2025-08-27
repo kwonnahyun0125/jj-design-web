@@ -8,7 +8,10 @@
     "build": "rm -rf dist/* && tsc",
     "start": "node dist/app.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node --files src/app.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down --volumes",
+    "docker:clean": "docker compose down --volumes --rmi all --remove-orphans"
   },
   "lint-staged": {
     "*.{js,ts}": [

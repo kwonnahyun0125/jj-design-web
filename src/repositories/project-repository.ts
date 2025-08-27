@@ -1,6 +1,7 @@
 import prisma from '../config/db';
-import { Prisma, ProjectType } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
+import { NotFoundError } from '../types/error-type';
 
 export class ProjectRepository {
   async createProject(data: CreateProjectDto) {
@@ -16,7 +17,6 @@ export class ProjectRepository {
 
     if (query.q) {
       and.push({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         OR: [
           { title: { contains: query.q, mode: 'insensitive' } },
           { description: { contains: query.q, mode: 'insensitive' } },
@@ -25,9 +25,22 @@ export class ProjectRepository {
     }
 
     if (query.type) {
-      and.push({ type: query.type as unknown as ProjectType });
+      and.push({ type: query.type });
     }
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
+    if (query.keywordIds && query.keywordIds.length > 0) {
+      and.push({
+        projectImages: {
+          some: {
+            AND: query.keywordIds.map((kid) => ({
+              imageKeywords: { some: { keywordId: kid } },
+            })),
+            image: { isDeleted: false },
+          },
+        },
+      });
+    }
+
     const where: Prisma.ProjectWhereInput = { AND: and };
     const page = Math.max(1, query.page);
     const pageSize = Math.min(100, Math.max(1, query.pageSize));
@@ -52,24 +65,16 @@ export class ProjectRepository {
       where: { id, isDeleted: false },
       include: {
         projectImages: {
-          // 이미지 삭제된 건 제외
-          where: {
-            image: { isDeleted: false },
-          },
+          where: { image: { isDeleted: false } },
           include: {
             image: true,
-            imageKeywords: {
-              include: {
-                keyword: true,
-              },
-            },
+            imageKeywords: { include: { keyword: true } },
           },
         },
       },
     });
   }
 
-  // (기존 단순 조회가 다른 곳에서 쓰이면 남겨두고, 상세 API는 findProjectDetail 사용)
   async findProjectById(id: number) {
     return prisma.project.findFirst({
       where: { id, isDeleted: false },
@@ -82,7 +87,7 @@ export class ProjectRepository {
       select: { id: true },
     });
     if (!exists) {
-      throw new Error('PROJECT_NOT_FOUND');
+      throw new NotFoundError('PROJECT_NOT_FOUND'); // ← 커스텀 에러
     }
 
     await prisma.project.update({
@@ -99,7 +104,7 @@ export class ProjectRepository {
       select: { id: true },
     });
     if (!exists) {
-      throw new Error('PROJECT_NOT_FOUND');
+      throw new NotFoundError('PROJECT_NOT_FOUND'); // ← 커스텀 에러
     }
 
     return prisma.project.update({

@@ -1,6 +1,7 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, ProjectType } from '@prisma/client';
 import { ProjectRepository } from '../repositories/project-repository';
 import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
+import { NotFoundError } from '../types/error-type';
 
 type ProjectImageDto = {
   id: number; // imageId
@@ -12,7 +13,7 @@ type ProjectDetailDto = {
   id: number;
   title: string;
   areaSize: number;
-  type: string;
+  type: ProjectType;
   description: string | null;
   durationWeeks: number | null;
   reviews: string | null;
@@ -34,27 +35,42 @@ export class ProjectService {
     return await this.projectRepository.findProjects(query);
   }
 
-  // ✅ 상세 조회는 상세 DTO로 반환 (이미지+키워드 포함 & 기본값 처리)
-  async getProjectById(id: number): Promise<ProjectDetailDto | null> {
+  // 상세 조회는 상세 DTO로 반환 (이미지+키워드 포함 & 기본값 처리)
+  async getProjectById(id: number): Promise<ProjectDetailDto> {
     const project = await this.projectRepository.findProjectDetail(id);
-    if (!project) return null;
+    if (!project) {
+      throw new NotFoundError('Project not found');
+    }
 
-    const images: ProjectImageDto[] =
+    let images: ProjectImageDto[] =
       project.projectImages.map((pi) => {
-        const names = (pi.imageKeywords?.map((ik) => ik.keyword.name) ?? []).filter(Boolean);
+        // 중복 제거 + 정렬
+        const names = Array.from(
+          new Set((pi.imageKeywords?.map((ik) => ik.keyword.name) ?? []).filter(Boolean))
+        ).sort((a, b) => a.localeCompare(b));
 
         return {
           id: pi.imageId,
           url: pi.image.url,
-          keywords: names.length > 0 ? names : ['전체'], // 🔸 기본값 주입(응답 단계)
+          keywords: names.length > 0 ? names : ['전체'], // 키워드 없으면 '전체' 기본값
         };
       }) ?? [];
+
+    if (images.length === 0 && project.imageUrl) {
+      images = [
+        {
+          id: 0,
+          url: project.imageUrl,
+          keywords: ['전체'],
+        },
+      ];
+    }
 
     return {
       id: project.id,
       title: project.title,
       areaSize: project.areaSize,
-      type: project.type, // enum -> string
+      type: project.type,
       description: project.description ?? null,
       durationWeeks: project.durationWeeks ?? null,
       reviews: project.reviews ?? null,

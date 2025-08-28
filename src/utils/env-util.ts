@@ -11,7 +11,17 @@ const verifyEnv = (name: string): unknown => {
 };
 
 const env = {
-  port: verifyEnv('PORT'),
+  // PORT
+  port: verifyEnv('PORT') as number,
+  // DATABASE
+  databaseUrl: verifyEnv('DATABASE_URL') as string,
+  // TOKEN
+  accessSecretKey: verifyEnv('ACCESS_SECRET_KEY') as string,
+  refreshSecretKey: verifyEnv('REFRESH_SECRET_KEY') as string,
+  accessExpiryUnit: verifyEnv('ACCESS_EXPIRY_UNIT') as string,
+  refreshExpiryUnit: verifyEnv('REFRESH_EXPIRY_UNIT') as string,
+  accessExpiryValue: verifyEnv('ACCESS_EXPIRY_VALUE') as number,
+  refreshExpiryValue: verifyEnv('REFRESH_EXPIRY_VALUE') as number,
 };
 
 export default env;

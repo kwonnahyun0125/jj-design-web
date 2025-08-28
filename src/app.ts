@@ -7,10 +7,11 @@ import { globalErrorHandler } from './handlers/global-error-handler';
 import { notFoundHandler } from './handlers/not-found-handler';
 import rootRouter from './routers/root-router';
 import projectRouter from './routers/projects-router';
-import imageUploadRouter from './routers/image-upload-router';
+//import imageUploadRouter from './routers/image-upload-router';
 import projectImageRouter from './routers/project-image-router';
 import keywordRouter from './routers/keyword-router';
 import authRouter from './routers/auth-router';
+import consultingRouter from './routers/consultings-router';
 
 const app = express();
 
@@ -23,10 +24,11 @@ app.use(cookieParser());
 // ROUTERS
 app.use(rootRouter);
 app.use(projectRouter);
-app.use(imageUploadRouter);
+//app.use(imageUploadRouter);
 app.use(projectImageRouter);
 app.use(keywordRouter);
 app.use(authRouter);
+app.use(consultingRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

@@ -25,11 +25,9 @@ export const allow = (roles: UserRole[]) => {
 
     const payload = verifyAccessToken(accessToken);
 
-    setUser(req, payload);
+    const user = setUser(req, payload);
 
-    // USER
-    // 사용자만 사용하는 API 를 처리합니다.
-    if (roles.includes(UserRole.User)) {
+    if (user && roles.includes(UserRole.User)) {
       return next();
     }
 

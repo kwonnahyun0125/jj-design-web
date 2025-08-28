@@ -1,5 +1,7 @@
 import express from 'express';
 import env from './utils/env-util';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { listenHandler } from './handlers/listen-handler';
 import { globalErrorHandler } from './handlers/global-error-handler';
 import { notFoundHandler } from './handlers/not-found-handler';
@@ -8,12 +10,15 @@ import projectRouter from './routers/projects-router';
 import imageUploadRouter from './routers/image-upload-router';
 import projectImageRouter from './routers/project-image-router';
 import keywordRouter from './routers/keyword-router';
+import authRouter from './routers/auth-router';
 
 const app = express();
 
 // PRE MIDDLEWARE
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // ROUTERS
 app.use(rootRouter);
@@ -21,6 +26,7 @@ app.use(projectRouter);
 app.use(imageUploadRouter);
 app.use(projectImageRouter);
 app.use(keywordRouter);
+app.use(authRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

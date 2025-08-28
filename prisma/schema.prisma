@@ -15,17 +15,17 @@ datasource db {
 }
 
 model Admin {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
-  passwordHash String
-  name         String
-  phoneNumber  String?   @db.VarChar(20)
-  role         String    @default("admin") // admin / manager / viewer
-  isActive     Boolean   @default(true)
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  isDeleted    Boolean   @default(false)
+  id          Int       @id @default(autoincrement())
+  usercode    String    @unique
+  password    String
+  name        String
+  phoneNumber String?   @db.VarChar(20)
+  //role        String    @default("admin") // admin / manager / viewer
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isDeleted   Boolean   @default(false)
 
   adminLogs AdminLog[]
 }
@@ -69,7 +69,7 @@ enum ProjectType {
 }
 
 model ProjectImage {
-  id        Int      @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
   projectId Int
   imageId   Int
 
@@ -78,7 +78,7 @@ model ProjectImage {
 
   imageKeywords ProjectImageKeyword[]
 
-  @@unique([imageId, projectId]) 
+  @@unique([imageId, projectId])
   @@map("project_images")
 }
 

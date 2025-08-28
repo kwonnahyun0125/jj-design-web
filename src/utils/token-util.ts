@@ -53,11 +53,11 @@ export const getRefreshToken = (req: Request) => {
   // 쿠키에 있는 토큰
   const tokenFromCookie = req.cookies?.[CookieType.Refresh];
 
-  /*   // Authorization 헤더
+  // Authorization 헤더
   const authHeader = req.headers.authorization;
   const tokenFromHeader = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined;
- */
-  return tokenFromCookie; //|| tokenFromHeader;
+
+  return tokenFromCookie || tokenFromHeader;
 };
 export const deleteRefreshToken = (res: Response) => res.clearCookie(CookieType.Refresh);
 

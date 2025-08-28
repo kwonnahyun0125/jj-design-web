@@ -147,16 +147,35 @@ model CompanyImage {
   @@map("company_images")
 }
 
-model ConsultingRequest {
-  id           Int      @id @default(autoincrement())
-  customerName String   @map("customer_name") @db.VarChar(100)
-  phoneNumber  String   @map("phone_number") @db.VarChar(20)
-  email        String   @db.VarChar(100)
-  address      String   @db.VarChar(255)
-  type         String   @db.VarChar(100)
-  areaSize     String   @map("area_size") @db.VarChar(50)
-  isAgreeTerms Boolean  @default(false) @map("is_agree_terms")
-  createdAt    DateTime @default(now())
+enum ConsultingType {
+  RESIDENCE // 주거공간
+  MERCANTILE // 상업공간
+  ARCHITECTURE // 건축물
+}
+
+enum ConsultingStatus {
+  UNCHECKED // 미확인
+  CHECKED // 확인
+  CONTACTED // 연락 완료
+}
+
+model Consulting {
+  id            Int              @id @default(autoincrement())
+  // 기본 정보
+  name          String           @db.VarChar(100)
+  phone         String           @db.VarChar(20)
+  // 현장 정보
+  address       String           @db.VarChar(255)
+  type          ConsultingType   @default(RESIDENCE)
+  size          String           @db.VarChar(50)
+  budget        String           @db.VarChar(50)
+  preferredDate DateTime
+  // 참고자료
+  note          String?
+  // 기타
+  isAgreeTerms  Boolean          @default(false)
+  status        ConsultingStatus @default(UNCHECKED)
+  createdAt     DateTime         @default(now())
 }
 
 model Showroom {

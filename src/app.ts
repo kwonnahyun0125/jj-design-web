@@ -13,6 +13,7 @@ import keywordRouter from './routers/keyword-router';
 import authRouter from './routers/auth-router';
 import consultingRouter from './routers/consultings-router';
 import noticeRouter from './routers/notice-router';
+import showroomRouter from './routers/showroom.router';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(keywordRouter);
 app.use(authRouter);
 app.use(consultingRouter);
 app.use(noticeRouter);
+app.use(showroomRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

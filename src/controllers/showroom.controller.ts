@@ -1,60 +1,58 @@
-import { Request, Response, NextFunction } from 'express';
+import type { RequestHandler } from 'express';
 import { ShowroomService } from '../services/showroom.service';
+import { successResponse } from '../utils/response-util';
 import {
   listQuerySchema,
   createShowroomSchema,
   updateShowroomSchema,
-} from '../types/showroom.schema';
+} from '../types/showroom.type';
 
-export class ShowroomController {
-  static async list(req: Request, res: Response, next: NextFunction) {
-    try {
-      const q = listQuerySchema.parse(req.query);
-      const data = await ShowroomService.list(q);
-      res.json({ data });
-    } catch (e) {
-      next(e);
-    }
-  }
+const showroomService = new ShowroomService();
 
-  static async getById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = Number(req.params.id);
-      const data = await ShowroomService.getById(id);
-      res.json({ data });
-    } catch (e) {
-      next(e);
-    }
+export const createShowroom: RequestHandler = async (req, res, next) => {
+  try {
+    const body = createShowroomSchema.parse(req.body);
+    const created = await showroomService.createShowroom(body);
+    return res.status(201).json(successResponse(created));
+  } catch (e) {
+    return next(e);
   }
+};
 
-  static async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const body = createShowroomSchema.parse(req.body);
-      const data = await ShowroomService.create(body);
-      res.status(201).json({ data });
-    } catch (e) {
-      next(e);
-    }
+export const getShowrooms: RequestHandler = async (req, res, next) => {
+  try {
+    const q = listQuerySchema.parse(req.query);
+    const data = await showroomService.getShowrooms(q);
+    return res.status(200).json(successResponse(data));
+  } catch (e) {
+    return next(e);
   }
+};
 
-  static async update(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = Number(req.params.id);
-      const body = updateShowroomSchema.parse(req.body);
-      const data = await ShowroomService.update(id, body);
-      res.json({ data });
-    } catch (e) {
-      next(e);
-    }
+export const getShowroomById: RequestHandler = async (req, res, next) => {
+  try {
+    const data = await showroomService.getShowroomById(Number(req.params.id));
+    return res.status(200).json(successResponse(data));
+  } catch (e) {
+    return next(e);
   }
+};
 
-  static async remove(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = Number(req.params.id);
-      const data = await ShowroomService.remove(id);
-      res.json({ data });
-    } catch (e) {
-      next(e);
-    }
+export const updateShowroom: RequestHandler = async (req, res, next) => {
+  try {
+    const body = updateShowroomSchema.parse(req.body);
+    const data = await showroomService.updateShowroom(Number(req.params.id), body);
+    return res.status(200).json(successResponse(data));
+  } catch (e) {
+    return next(e);
   }
-}
+};
+
+export const deleteShowroom: RequestHandler = async (req, res, next) => {
+  try {
+    const data = await showroomService.deleteShowroom(Number(req.params.id));
+    return res.status(200).json(successResponse(data));
+  } catch (e) {
+    return next(e);
+  }
+};

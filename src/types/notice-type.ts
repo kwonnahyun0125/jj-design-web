@@ -1,16 +1,7 @@
-// src/types/notice-dto.ts
-export interface CreateNoticeDto {
+export interface RequestNoticeDto {
   title: string;
   content: string;
-  imageUrl?: string | null;
 }
-
-export interface UpdateNoticeDto {
-  title?: string;
-  content?: string;
-  imageUrl?: string | null;
-}
-
 export interface GetNoticesQuery {
   page?: number;
   limit?: number;

@@ -1,9 +1,9 @@
 import prisma from '../config/db';
 import { Prisma } from '@prisma/client';
-import { GetNoticesQuery, CreateNoticeDto, UpdateNoticeDto } from '../types/notice-type';
+import { RequestNoticeDto, GetNoticesQuery } from '../types/notice-type';
 
 export class NoticeRepository {
-  async createNotice(data: CreateNoticeDto) {
+  async createNotice(data: RequestNoticeDto) {
     return prisma.notice.create({ data });
   }
 
@@ -52,7 +52,7 @@ export class NoticeRepository {
     return { list, totalCount };
   }
 
-  async updateNotice(id: number, data: UpdateNoticeDto) {
+  async updateNotice(id: number, data: Partial<RequestNoticeDto>) {
     return prisma.notice.update({
       where: { id },
       data,

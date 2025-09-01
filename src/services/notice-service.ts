@@ -1,18 +1,17 @@
 import { NoticeRepository } from '../repositories/notice-repository';
 import { BadRequestError, NotFoundError } from '../types/error-type';
-import { CreateNoticeDto, GetNoticesQuery, UpdateNoticeDto } from '../types/notice-type';
+import { RequestNoticeDto, GetNoticesQuery } from '../types/notice-type';
 
 export class NoticeService {
   private NoticeRepository = new NoticeRepository();
 
-  async createNotice(data: CreateNoticeDto) {
+  async createNotice(data: RequestNoticeDto) {
     if (!data.title) throw new BadRequestError('제목을 입력하세요.');
     if (!data.content) throw new BadRequestError('내용을 입력하세요.');
 
     return this.NoticeRepository.createNotice({
       title: data.title,
       content: data.content,
-      imageUrl: data.imageUrl ?? null,
     });
   }
 
@@ -49,7 +48,7 @@ export class NoticeService {
     return notice;
   }
 
-  async updateNotice(noticeId: number, data: UpdateNoticeDto) {
+  async updateNotice(noticeId: number, data: Partial<RequestNoticeDto>) {
     const notice = await this.NoticeRepository.findNoticeById(noticeId);
     if (!notice || notice.isDeleted) throw new NotFoundError('공지사항을 찾을 수 없습니다.');
 

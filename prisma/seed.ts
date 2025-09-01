@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '../src/utils/password-util';
 
 const prisma = new PrismaClient();
 
@@ -40,18 +41,36 @@ async function main() {
 
   console.log('Tag seeding completed');
 
+  const hashedPassword = await hashPassword('password');
+
   await prisma.admin.upsert({
     where: { usercode: 'admin' },
     update: {},
     create: {
       usercode: 'admin',
-      password: 'password',
+      password: hashedPassword,
       name: 'Admin',
       phoneNumber: '010-1234-5678',
     },
   });
 
   console.log('Admin seeding completed');
+
+  await prisma.company.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      name: 'JJ 디자인',
+      address: '서울특별시 강남구 테헤란로 123',
+      phone: '123-456-7890',
+      owner: '홍길동',
+      email: 'owner@jjdesign.com',
+      business: '123-45-67890',
+      naver: 'naver.com/owner',
+      instagram: 'instagram.com/owner',
+    },
+  });
 
   await prisma.$disconnect();
 }

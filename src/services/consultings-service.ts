@@ -110,3 +110,15 @@ export const deleteConsulting = async (req: Request) => {
     where: { id: Number(id) },
   });
 };
+
+export const getConsultingDetail = async (req: Request) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new BadRequestError();
+  }
+
+  return await prisma.consulting.findUnique({
+    where: { id: Number(id) },
+  });
+};

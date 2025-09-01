@@ -136,15 +136,18 @@ model Image {
 }
 
 model Company {
-  id           Int      @id @default(autoincrement())
-  name         String   @unique
-  description  String?
-  imageUrl     String?
-  naverBlogUrl String?  @map("naver_blog_url")
-  instagramUrl String?  @map("instagram_url")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isDeleted    Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  owner     String
+  email     String
+  address   String   @db.VarChar(255)
+  phone     String   @db.VarChar(20)
+  business  String   @db.VarChar(100)
+  naver     String
+  instagram String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
 
   companyImages CompanyImage[]
 

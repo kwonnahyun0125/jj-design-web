@@ -6,7 +6,7 @@ export enum Category {
   ARCHITECTURE = 'ARCHITECTURE',
 }
 
-export enum ProjectLineup {
+export enum Lineup {
   FULL = 'FULL',
   PARTIAL = 'PARTIAL',
 }
@@ -17,7 +17,7 @@ export interface CreateProjectRequest {
   category?: Category;
   description?: string;
   duration?: number;
-  lineup?: ProjectLineup;
+  lineup?: Lineup;
   keywords?: Keyword[];
   review?: string;
   images: {
@@ -32,7 +32,7 @@ export interface UpdateProjectRequest {
   category?: Category;
   description?: string;
   duration?: number;
-  lineup?: ProjectLineup;
+  lineup?: Lineup;
   review?: string;
   keywords?: Keyword[];
   images: {
@@ -47,6 +47,7 @@ export type GetProjectListQuery = {
   size?: number;
   keyword?: Keyword;
   search?: string;
+  lineup?: Lineup;
 };
 
 /* 

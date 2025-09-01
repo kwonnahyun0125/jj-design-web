@@ -1,4 +1,5 @@
 import { Category, Keyword } from '@prisma/client';
+import { Lineup } from '../types/project-type';
 
 export const bytesToMB = (bytes: number): string => (bytes / 1024 / 1024).toFixed(2) + 'MB';
 
@@ -28,6 +29,17 @@ export const toKeyword = (keyword: string | undefined): Keyword | undefined => {
       return Keyword.COMMERCIAL;
     case 'NEW':
       return Keyword.NEW;
+    default:
+      return undefined;
+  }
+};
+
+export const toLineup = (lineup: string | undefined): Lineup | undefined => {
+  switch (lineup) {
+    case 'FULL':
+      return Lineup.FULL;
+    case 'PARTIAL':
+      return Lineup.PARTIAL;
     default:
       return undefined;
   }

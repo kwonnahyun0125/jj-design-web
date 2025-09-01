@@ -44,7 +44,7 @@ export interface UpdateProjectRequest {
 export type GetProjectListQuery = {
   category?: Category;
   page?: number;
-  pageSize?: number;
+  size?: number;
   keyword?: Keyword;
   search?: string;
 };

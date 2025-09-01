@@ -69,7 +69,7 @@ export const createProjectWithTransaction = async (data: CreateProjectRequest) =
 };
 
 export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
-  const { category = Category.RESIDENCE, page = 1, pageSize = 10, keyword, search } = query;
+  const { category = Category.RESIDENCE, page = 1, size = 10, keyword, search } = query;
 
   const categoryEnum = toCategory(category);
   const keywordEnum = toKeyword(keyword);
@@ -95,8 +95,8 @@ export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
     prisma.project.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      skip: (page - 1) * size,
+      take: size,
     }),
   ]);
 

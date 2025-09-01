@@ -3,6 +3,7 @@ import { successResponse } from '../utils/response-util';
 import {
   createConsulting,
   deleteConsulting,
+  getConsultingDetail,
   getConsultingList,
   updateConsulting,
 } from '../services/consultings-service';
@@ -15,6 +16,12 @@ export const handleCreateConsulting = async (req: Request, res: Response) => {
 
 export const handleGetConsultingList = async (req: Request, res: Response) => {
   const data = await getConsultingList(req);
+
+  res.status(200).json(successResponse(data));
+};
+
+export const handleGetConsultingDetail = async (req: Request, res: Response) => {
+  const data = await getConsultingDetail(req);
 
   res.status(200).json(successResponse(data));
 };

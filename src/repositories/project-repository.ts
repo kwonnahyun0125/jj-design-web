@@ -97,8 +97,8 @@ export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
     prisma.project.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * size,
-      take: size,
+      skip: (page - 1) * Number(size),
+      take: Number(size),
     }),
   ]);
 

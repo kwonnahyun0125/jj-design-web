@@ -39,24 +39,17 @@ export class NoticeRepository {
         : {}),
     };
 
-    const [notices, total] = await prisma.$transaction([
+    const [list, totalCount] = await prisma.$transaction([
       prisma.notice.findMany({
         where,
         orderBy: { [orderBy]: order },
         skip: (page - 1) * limit,
         take: limit,
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          updatedAt: true,
-          imageUrl: true,
-        },
       }),
       prisma.notice.count({ where }),
     ]);
 
-    return { notices, total, page, limit };
+    return { list, totalCount };
   }
 
   async updateNotice(id: number, data: UpdateNoticeDto) {

@@ -1,3 +1,5 @@
+import { Keyword } from '@prisma/client';
+
 export enum Category {
   RESIDENCE = 'RESIDENCE',
   MERCANTILE = 'MERCANTILE',
@@ -16,6 +18,7 @@ export interface CreateProjectRequest {
   description?: string;
   duration?: number;
   lineup?: ProjectLineup;
+  keywords?: Keyword[];
   review?: string;
   images: {
     url: string;
@@ -31,6 +34,7 @@ export interface UpdateProjectRequest {
   duration?: number;
   lineup?: ProjectLineup;
   review?: string;
+  keywords?: Keyword[];
   images: {
     url: string;
     tagId: number;
@@ -40,8 +44,9 @@ export interface UpdateProjectRequest {
 export type GetProjectListQuery = {
   category?: Category;
   page?: number;
-  pageSize?: number;
-  keyword?: string;
+  size?: number;
+  keyword?: Keyword;
+  search?: string;
 };
 
 /* 

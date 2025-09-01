@@ -39,6 +39,21 @@ async function main() {
   }
 
   console.log('Tag seeding completed');
+
+  await prisma.admin.upsert({
+    where: { usercode: 'admin' },
+    update: {},
+    create: {
+      usercode: 'admin',
+      password: 'password',
+      name: 'Admin',
+      phoneNumber: '010-1234-5678',
+    },
+  });
+
+  console.log('Admin seeding completed');
+
+  await prisma.$disconnect();
 }
 
 main()

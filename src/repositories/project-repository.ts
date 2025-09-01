@@ -1,3 +1,4 @@
+import { Keyword } from '@prisma/client';
 import prisma from '../config/db';
 import {
   Category,
@@ -6,11 +7,14 @@ import {
   UpdateProjectRequest,
 } from '../types/project-type';
 import { getDefaultTagsByType } from '../utils/from-util';
-import { toCategory } from '../utils/to-util';
+import { toCategory, toKeyword } from '../utils/to-util';
 
 export const createProjectWithTransaction = async (data: CreateProjectRequest) => {
   return await prisma.$transaction(async (tx) => {
-    // 프로젝트 생성 (imageUrl은 일단 비워둠)
+    const keywordList = data.keywords
+      ?.map((keyword) => toKeyword(keyword))
+      .filter(Boolean) as Keyword[];
+
     let project = await tx.project.create({
       data: {
         title: data.title,
@@ -18,6 +22,7 @@ export const createProjectWithTransaction = async (data: CreateProjectRequest) =
         category: data.category ?? 'RESIDENCE',
         description: data.description,
         duration: data.duration,
+        keywords: keywordList,
         lineup: data.lineup ?? 'FULL',
         review: data.review,
         imageUrl: null,
@@ -64,24 +69,31 @@ export const createProjectWithTransaction = async (data: CreateProjectRequest) =
 };
 
 export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
-  const { category = Category.RESIDENCE, page = 1, pageSize = 10, keyword } = query;
+  const { category = Category.RESIDENCE, page = 1, pageSize = 10, keyword, search } = query;
 
   const categoryEnum = toCategory(category);
+  const keywordEnum = toKeyword(keyword);
+
+  const where = {
+    isDeleted: false,
+    ...(keywordEnum ? { keywords: { has: keywordEnum } } : {}),
+    category: categoryEnum,
+    ...(search
+      ? {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' as const } },
+            { description: { contains: search, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  };
 
   const [totalCount, list] = await Promise.all([
     prisma.project.count({
-      where: {
-        isDeleted: false,
-        title: { contains: keyword, mode: 'insensitive' },
-        category: categoryEnum,
-      },
+      where,
     }),
     prisma.project.findMany({
-      where: {
-        isDeleted: false,
-        title: { contains: keyword, mode: 'insensitive' },
-        category: categoryEnum,
-      },
+      where,
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * pageSize,
       take: pageSize,

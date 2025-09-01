@@ -50,6 +50,7 @@ model Project {
   description String?
   duration    Int?
   lineup      Lineup    @default(FULL)
+  keywords    Keyword[]
   review      String?
   imageUrl    String?
   createdAt   DateTime  @default(now())
@@ -74,6 +75,13 @@ enum Category {
 enum Lineup {
   FULL
   PARTIAL
+}
+
+enum Keyword {
+  APART
+  HOUSE
+  COMMERCIAL
+  NEW
 }
 
 model Tag {

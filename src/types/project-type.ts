@@ -1,5 +1,50 @@
-import { ProjectType } from '@prisma/client';
+export enum Category {
+  RESIDENCE = 'RESIDENCE',
+  MERCANTILE = 'MERCANTILE',
+  ARCHITECTURE = 'ARCHITECTURE',
+}
 
+export enum ProjectLineup {
+  FULL = 'FULL',
+  PARTIAL = 'PARTIAL',
+}
+
+export interface CreateProjectRequest {
+  title: string;
+  size: number;
+  category?: Category;
+  description?: string;
+  duration?: number;
+  lineup?: ProjectLineup;
+  review?: string;
+  images: {
+    url: string;
+    tagId: number;
+  }[];
+}
+
+export interface UpdateProjectRequest {
+  title: string;
+  size: number;
+  category?: Category;
+  description?: string;
+  duration?: number;
+  lineup?: ProjectLineup;
+  review?: string;
+  images: {
+    url: string;
+    tagId: number;
+  }[];
+}
+
+export type GetProjectListQuery = {
+  category?: Category;
+  page?: number;
+  pageSize?: number;
+  keyword?: string;
+};
+
+/* 
 export interface CreateProjectDto {
   title: string;
   areaSize: number;
@@ -53,3 +98,4 @@ export type Paged<T> = {
   total: number;
   rows: T[];
 };
+ */

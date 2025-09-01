@@ -13,6 +13,9 @@
     "docker:down": "docker compose down --volumes",
     "docker:clean": "docker compose down --volumes --rmi all --remove-orphans"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "lint-staged": {
     "*.{js,ts}": [
       "eslint --fix",
@@ -54,6 +57,7 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "firebase-admin": "^13.4.0",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "zod": "^4.1.5"
   }
 }

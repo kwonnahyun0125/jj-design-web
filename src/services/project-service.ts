@@ -1,8 +1,41 @@
-import { Prisma, ProjectType } from '@prisma/client';
-import { ProjectRepository } from '../repositories/project-repository';
-import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
-import { NotFoundError } from '../types/error-type';
+import { Request } from 'express';
+import {
+  createProjectWithTransaction,
+  deleteProjectWithId,
+  getProjectDetailWithId,
+  getProjectListWithFilter,
+  updateProjectWithTransaction,
+} from '../repositories/project-repository';
 
+export const getProjectList = async (req: Request) => {
+  const { query } = req;
+  return await getProjectListWithFilter(query);
+};
+
+export const createProject = async (req: Request) => {
+  const { body } = req;
+  return await createProjectWithTransaction(body);
+};
+
+export const getProjectDetail = async (req: Request) => {
+  const { params } = req;
+  const { id } = params;
+  return await getProjectDetailWithId(Number(id));
+};
+
+export const updateProject = async (req: Request) => {
+  const { params, body } = req;
+  const { id } = params;
+  return await updateProjectWithTransaction(Number(id), body);
+};
+
+export const deleteProject = async (req: Request) => {
+  const { params } = req;
+  const { id } = params;
+  return await deleteProjectWithId(Number(id));
+};
+
+/* 
 type ProjectImageDto = {
   id: number; // imageId
   url: string;
@@ -89,3 +122,4 @@ export class ProjectService {
     return await this.projectRepository.softDeleteProject(id);
   }
 }
+ */

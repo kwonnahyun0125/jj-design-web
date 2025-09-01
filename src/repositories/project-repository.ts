@@ -1,8 +1,161 @@
 import prisma from '../config/db';
-import { Prisma } from '@prisma/client';
-import { CreateProjectDto, GetProjectsQuery } from '../types/project-type';
-import { NotFoundError } from '../types/error-type';
+import {
+  Category,
+  CreateProjectRequest,
+  GetProjectListQuery,
+  UpdateProjectRequest,
+} from '../types/project-type';
+import { getDefaultTagsByType } from '../utils/from-util';
+import { toCategory } from '../utils/to-util';
 
+export const createProjectWithTransaction = async (data: CreateProjectRequest) => {
+  return await prisma.$transaction(async (tx) => {
+    // 프로젝트 생성 (imageUrl은 일단 비워둠)
+    let project = await tx.project.create({
+      data: {
+        title: data.title,
+        size: data.size,
+        category: data.category ?? 'RESIDENCE',
+        description: data.description,
+        duration: data.duration,
+        lineup: data.lineup ?? 'FULL',
+        review: data.review,
+        imageUrl: null,
+      },
+    });
+
+    // 기본 태그 등록
+    const defaultTags = await getDefaultTagsByType(data.category ?? Category.RESIDENCE);
+
+    if (defaultTags.length) {
+      await tx.projectTag.createMany({
+        data: defaultTags.map((tagId) => ({
+          projectId: project.id,
+          tagId: Number(tagId),
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    // 이미지 등록
+    if (data.images?.length) {
+      for (const img of data.images) {
+        const image = await tx.image.create({
+          data: { url: img.url },
+        });
+
+        await tx.projectImage.create({
+          data: {
+            projectId: project.id,
+            imageId: image.id,
+            tagId: Number(img.tagId),
+          },
+        });
+      }
+
+      project = await tx.project.update({
+        where: { id: project.id },
+        data: { imageUrl: data.images[0].url },
+      });
+    }
+
+    return project;
+  });
+};
+
+export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
+  const { category = Category.RESIDENCE, page = 1, pageSize = 10, keyword } = query;
+
+  const categoryEnum = toCategory(category);
+
+  const [totalCount, list] = await Promise.all([
+    prisma.project.count({
+      where: {
+        isDeleted: false,
+        title: { contains: keyword, mode: 'insensitive' },
+        category: categoryEnum,
+      },
+    }),
+    prisma.project.findMany({
+      where: {
+        isDeleted: false,
+        title: { contains: keyword, mode: 'insensitive' },
+        category: categoryEnum,
+      },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+  ]);
+
+  return { totalCount, list };
+};
+
+export const getProjectDetailWithId = async (id: number) => {
+  return await prisma.project.findFirst({
+    where: { id, isDeleted: false },
+    include: {
+      images: {
+        where: { image: { isDeleted: false } },
+        include: {
+          image: true,
+        },
+      },
+    },
+  });
+};
+export const updateProjectWithTransaction = async (id: number, data: UpdateProjectRequest) => {
+  return await prisma.$transaction(async (tx) => {
+    const project = await tx.project.update({
+      where: { id },
+      data: {
+        title: data.title,
+        size: data.size,
+        category: data.category ?? 'RESIDENCE',
+        description: data.description,
+        duration: data.duration,
+        lineup: data.lineup ?? 'FULL',
+        review: data.review,
+      },
+    });
+
+    await tx.projectImage.deleteMany({
+      where: { projectId: id },
+    });
+
+    if (data.images?.length) {
+      for (const img of data.images) {
+        const image = await tx.image.create({
+          data: { url: img.url },
+        });
+
+        await tx.projectImage.create({
+          data: {
+            projectId: id,
+            imageId: image.id,
+            tagId: img.tagId,
+          },
+        });
+      }
+
+      await tx.project.update({
+        where: { id },
+        data: { imageUrl: data.images[0].url },
+      });
+    }
+
+    return project;
+  });
+};
+
+export const deleteProjectWithId = async (id: number) => {
+  return await prisma.project.update({
+    where: { id },
+    data: { isDeleted: true },
+  });
+};
+
+/* 
 export class ProjectRepository {
   async createProject(data: CreateProjectDto) {
     const { title, areaSize, type, description, durationWeeks, reviews, imageUrl } = data;
@@ -115,3 +268,4 @@ export class ProjectRepository {
 }
 
 export default new ProjectRepository();
+ */

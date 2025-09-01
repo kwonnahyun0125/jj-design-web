@@ -10,3 +10,4 @@ coverage/
 *.log
 logs/
 src/generated/prisma/
+firebase-config.env

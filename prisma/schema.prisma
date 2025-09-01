@@ -43,40 +43,70 @@ model AdminLog {
 }
 
 model Project {
-  id            Int         @id @default(autoincrement())
-  title         String
-  areaSize      Int
-  type          ProjectType
-  description   String?
-  durationWeeks Int?
-  reviews       String?
-  imageUrl      String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  isDeleted     Boolean     @default(false)
+  id          Int       @id @default(autoincrement())
+  title       String
+  size        Int
+  category    Category  @default(RESIDENCE)
+  description String?
+  duration    Int?
+  lineup      Lineup    @default(FULL)
+  review      String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  isDeleted   Boolean   @default(false)
 
-  projectImages ProjectImage[]
+  images ProjectImage[]
+  tags   ProjectTag[]
 
   @@index([isDeleted])
-  @@index([type, areaSize])
+  @@index([category, size])
   @@map("projects")
 }
 
-enum ProjectType {
-  RESIDENCE // 주거공간
-  MERCANTILE // 상업공간
-  ARCHITECTURE // 건축물
+enum Category {
+  RESIDENCE
+  MERCANTILE
+  ARCHITECTURE
+}
+
+enum Lineup {
+  FULL
+  PARTIAL
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  projects ProjectTag[]
+  images   ProjectImage[]
+}
+
+model ProjectTag {
+  projectId Int
+  tagId     Int
+
+  project Project @relation(fields: [projectId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([projectId, tagId])
+  @@map("project_tags")
 }
 
 model ProjectImage {
   id        Int @id @default(autoincrement())
   projectId Int
   imageId   Int
+  tagId     Int
 
   project Project @relation(fields: [projectId], references: [id])
   image   Image   @relation(fields: [imageId], references: [id], onDelete: Cascade)
-
-  imageKeywords ProjectImageKeyword[]
+  tag     Tag     @relation(fields: [tagId], references: [id])
 
   @@unique([imageId, projectId])
   @@map("project_images")
@@ -95,29 +125,6 @@ model Image {
   furnitureImages FurnitureImage[]
 
   @@map("image_urls")
-}
-
-model ProjectImageKeyword {
-  projectId Int
-  imageId   Int
-  keywordId Int
-
-  projectImage ProjectImage @relation(fields: [imageId, projectId], references: [imageId, projectId], onDelete: Cascade)
-  keyword      Keyword      @relation(fields: [keywordId], references: [id])
-
-  @@id([projectId, imageId, keywordId])
-  @@map("project_image_keywords")
-}
-
-model Keyword {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-
-  imageKeywords ProjectImageKeyword[]
-
-  @@index([name])
-  @@map("keywords")
 }
 
 model Company {

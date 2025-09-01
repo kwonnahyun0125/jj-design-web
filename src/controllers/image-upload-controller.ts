@@ -12,6 +12,7 @@ export const uploadImages: RequestHandler = async (req, res, next) => {
     if (!files) {
       throw new BadRequestError('파일이 존재하지 않습니다.');
     }
+
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
         const { originalname, buffer, mimetype } = file;

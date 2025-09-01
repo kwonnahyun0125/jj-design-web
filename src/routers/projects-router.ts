@@ -1,18 +1,18 @@
 import express from 'express';
 import {
-  createProject,
-  getProjects,
-  getProjectById,
-  updateProject,
-  deleteProject,
+  handleCreateProject,
+  handleDeleteProject,
+  handleGetProjectDetail,
+  handleGetProjectList,
+  handleUpdateProject,
 } from '../controllers/project-controller';
 
 const projects = express.Router();
 
-projects.get('/projects', getProjects);
-projects.get('/projects/:id', getProjectById);
-projects.post('/projects', createProject);
-projects.patch('/projects/:id', updateProject);
-projects.delete('/projects/:id', deleteProject);
+projects.post('/', handleCreateProject);
+projects.get('/', handleGetProjectList);
+projects.get('/:id', handleGetProjectDetail);
+projects.patch('/:id', handleUpdateProject);
+projects.delete('/:id', handleDeleteProject);
 
 export default projects;

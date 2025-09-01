@@ -1,9 +1,39 @@
 import { RequestHandler } from 'express';
 import { successResponse } from '../utils/response-util';
-import { ProjectService } from '../services/project-service';
-import { toNumber, toString, parseProjectType } from '../utils/query-parser';
-import { BadRequestError, NotFoundError } from '../types/error-type';
+import {
+  createProject,
+  deleteProject,
+  getProjectDetail,
+  getProjectList,
+  updateProject,
+} from '../services/project-service';
 
+export const handleGetProjectList: RequestHandler = async (req, res) => {
+  const projects = await getProjectList(req);
+  return res.json(successResponse(projects));
+};
+
+export const handleCreateProject: RequestHandler = async (req, res) => {
+  const project = await createProject(req);
+  return res.status(201).json(successResponse(project));
+};
+
+export const handleGetProjectDetail: RequestHandler = async (req, res) => {
+  const project = await getProjectDetail(req);
+  return res.json(successResponse(project));
+};
+
+export const handleUpdateProject: RequestHandler = async (req, res) => {
+  const project = await updateProject(req);
+  return res.json(successResponse(project));
+};
+
+export const handleDeleteProject: RequestHandler = async (req, res) => {
+  const project = await deleteProject(req);
+  return res.json(successResponse(project));
+};
+
+/* 
 const projectService = new ProjectService();
 
 export const createProject: RequestHandler = async (req, res, next) => {
@@ -83,3 +113,4 @@ export const deleteProject: RequestHandler = async (req, res, next) => {
     return next(error);
   }
 };
+ */

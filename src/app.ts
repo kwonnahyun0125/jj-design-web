@@ -7,9 +7,9 @@ import { globalErrorHandler } from './handlers/global-error-handler';
 import { notFoundHandler } from './handlers/not-found-handler';
 import rootRouter from './routers/root-router';
 import projectRouter from './routers/projects-router';
-//import imageUploadRouter from './routers/image-upload-router';
-import projectImageRouter from './routers/project-image-router';
-import keywordRouter from './routers/keyword-router';
+import imageUploadRouter from './routers/image-upload-router';
+//import projectImageRouter from './routers/project-image-router';
+//import keywordRouter from './routers/keyword-router';
 import authRouter from './routers/auth-router';
 import consultingRouter from './routers/consultings-router';
 import noticeRouter from './routers/notice-router';
@@ -18,17 +18,23 @@ import showroomRouter from './routers/showroom.router';
 const app = express();
 
 // PRE MIDDLEWARE
-app.use(cors());
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ROUTERS
 app.use(rootRouter);
-app.use(projectRouter);
-//app.use(imageUploadRouter);
-app.use(projectImageRouter);
-app.use(keywordRouter);
+app.use('/projects', projectRouter);
+app.use(imageUploadRouter);
+//app.use(projectImageRouter);
+//app.use(keywordRouter);
 app.use(authRouter);
 app.use(consultingRouter);
 app.use(noticeRouter);

@@ -13,8 +13,8 @@ import {
 const noticeRouter = express.Router();
 
 noticeRouter.post('/notices', allow([UserRole.User]), createNotice);
-noticeRouter.get('/notices', allow([UserRole.User]), getNotices);
-noticeRouter.get('/notices/:id', allow([UserRole.User]), getNoticeDetail);
+noticeRouter.get('/notices', allow([UserRole.None]), getNotices);
+noticeRouter.get('/notices/:id', allow([UserRole.None]), getNoticeDetail);
 noticeRouter.patch('/notices/:id', allow([UserRole.User]), updateNotice);
 noticeRouter.delete('/notices/:id', allow([UserRole.User]), deleteNotice);
 

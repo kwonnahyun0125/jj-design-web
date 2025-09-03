@@ -12,8 +12,8 @@ import { UserRole } from '../enums/user-role-enum';
 const router = Router();
 
 router.post('/furnitures', allow([UserRole.User]), createFurniture);
-router.get('/furnitures', allow([UserRole.User]), getFurnitures);
-router.get('/furnitures/:id', allow([UserRole.User]), getFurnitureById);
+router.get('/furnitures', allow([UserRole.None]), getFurnitures);
+router.get('/furnitures/:id', allow([UserRole.None]), getFurnitureById);
 router.patch('/furnitures/:id', allow([UserRole.User]), updateFurniture);
 router.delete('/furnitures/:id', allow([UserRole.User]), deleteFurniture);
 

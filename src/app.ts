@@ -15,6 +15,7 @@ import consultingRouter from './routers/consultings-router';
 import noticeRouter from './routers/notice-router';
 import showroomRouter from './routers/showroom.router';
 import companyRouter from './routers/company.router';
+import furnitureRouter from './routers/furniture.router';
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/consultings', consultingRouter);
 app.use(noticeRouter);
 app.use(showroomRouter);
 app.use('/company', companyRouter);
+app.use(furnitureRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

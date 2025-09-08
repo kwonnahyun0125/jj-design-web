@@ -1,5 +1,5 @@
 import { Category, Keyword } from '@prisma/client';
-import { Lineup } from '../types/project-type';
+import { Lineup, Pyung } from '../types/project-type';
 
 export const bytesToMB = (bytes: number): string => (bytes / 1024 / 1024).toFixed(2) + 'MB';
 
@@ -45,23 +45,38 @@ export const toLineup = (lineup: string | undefined): Lineup | undefined => {
   }
 };
 
-export const toSizeRange = (
-  sizeTag: string | undefined
-): { gte?: number; lt?: number } | undefined => {
-  switch (sizeTag) {
-    case '20':
-      return { gte: 20, lt: 30 };
-    case '30':
-      return { gte: 30, lt: 40 };
-    case '40':
-      return { gte: 40, lt: 50 };
-    case '50':
-      return { gte: 50, lt: 60 };
-    case '60':
-      return { gte: 60, lt: 70 };
-    case 'OTHER':
-      return { lt: 20, gte: 70 };
-    default:
-      return undefined;
+export const toSizeRanges = (
+  pyungArray: Pyung[] | undefined
+): { OR: { size: { gte?: number; lt?: number } }[] } | undefined => {
+  if (!pyungArray || pyungArray.length === 0) {
+    return undefined;
   }
+
+  const ranges: { size: { gte?: number; lt?: number } }[] = [];
+
+  pyungArray.forEach((pyung) => {
+    switch (pyung) {
+      case '20':
+        ranges.push({ size: { gte: 20, lt: 30 } });
+        break;
+      case '30':
+        ranges.push({ size: { gte: 30, lt: 40 } });
+        break;
+      case '40':
+        ranges.push({ size: { gte: 40, lt: 50 } });
+        break;
+      case '50':
+        ranges.push({ size: { gte: 50, lt: 60 } });
+        break;
+      case '60':
+        ranges.push({ size: { gte: 60, lt: 70 } });
+        break;
+      case 'OTHER':
+        ranges.push({ size: { lt: 20 } });
+        ranges.push({ size: { gte: 70 } });
+        break;
+    }
+  });
+
+  return ranges.length > 0 ? { OR: ranges } : undefined;
 };

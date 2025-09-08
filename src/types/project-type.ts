@@ -47,7 +47,7 @@ export type GetProjectListQuery = {
   category?: Category;
   page?: number;
   size?: number;
-  pyung?: Pyung;
+  pyung?: Pyung[];
   keyword?: Keyword;
   search?: string;
   lineup?: Lineup;

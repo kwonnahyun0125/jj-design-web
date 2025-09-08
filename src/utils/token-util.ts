@@ -7,7 +7,7 @@ import { CookieType } from '../enums/cookie-type-enum';
 
 // ACCESS_TOKEN 생성
 export const generateAccessToken = (payload: Payload): string => {
-  const { _iat, _exp, ...other } = payload;
+  const { iat, exp, ...other } = payload;
   const expiresIn = `${ENV.accessExpiryValue}${ENV.accessExpiryUnit}`;
 
   return jwt.sign(other, ENV.accessSecretKey, { expiresIn } as jwt.SignOptions);
@@ -15,7 +15,7 @@ export const generateAccessToken = (payload: Payload): string => {
 
 // REFRESH_TOKEN 생성
 export const generateRefreshToken = (payload: Payload): string => {
-  const { _iat, _exp, ...other } = payload;
+  const { iat, exp, ...other } = payload;
   const expiresIn = `${ENV.refreshExpiryValue}${ENV.refreshExpiryUnit}`;
 
   return jwt.sign(other, ENV.refreshSecretKey, { expiresIn } as jwt.SignOptions);

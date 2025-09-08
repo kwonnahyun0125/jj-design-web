@@ -1,5 +1,7 @@
 import { Keyword } from '@prisma/client';
 
+export type Pyung = '20' | '30' | '40' | '50' | '60' | 'OTHER';
+
 export enum Category {
   RESIDENCE = 'RESIDENCE',
   MERCANTILE = 'MERCANTILE',
@@ -45,6 +47,7 @@ export type GetProjectListQuery = {
   category?: Category;
   page?: number;
   size?: number;
+  pyung?: Pyung;
   keyword?: Keyword;
   search?: string;
   lineup?: Lineup;

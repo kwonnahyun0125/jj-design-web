@@ -5,6 +5,7 @@
   "scripts": {
     "reset": "npx prisma migrate reset -f",
     "migrate": "npx prisma migrate dev",
+    "seed": "npx prisma db seed",
     "build": "rm -rf dist/* && tsc",
     "start": "node dist/app.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node --files src/app.ts",

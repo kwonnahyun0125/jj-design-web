@@ -81,7 +81,9 @@ enum Keyword {
   APART
   HOUSE
   COMMERCIAL
+  OFFICE
   NEW
+  REMODELING
 }
 
 model Tag {

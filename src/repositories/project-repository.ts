@@ -7,7 +7,7 @@ import {
   UpdateProjectRequest,
 } from '../types/project-type';
 import { getDefaultTagsByType } from '../utils/from-util';
-import { toCategory, toKeyword, toLineup } from '../utils/to-util';
+import { toCategory, toKeyword, toLineup, toSizeRange } from '../utils/to-util';
 
 export const createProjectWithTransaction = async (data: CreateProjectRequest) => {
   return await prisma.$transaction(async (tx) => {
@@ -69,11 +69,12 @@ export const createProjectWithTransaction = async (data: CreateProjectRequest) =
 };
 
 export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
-  const { category = Category.RESIDENCE, page = 1, size = 10, keyword, search, lineup } = query;
+  const { category, page = 1, size = 10, keyword, search, lineup, pyung } = query;
 
   const categoryEnum = toCategory(category);
   const keywordEnum = toKeyword(keyword);
   const lineupEnum = toLineup(lineup);
+  const sizeRange = toSizeRange(pyung);
 
   const where = {
     isDeleted: false,
@@ -88,6 +89,7 @@ export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
         }
       : {}),
     ...(lineupEnum ? { lineup: lineupEnum } : {}),
+    size: sizeRange,
   };
 
   const [totalCount, list] = await Promise.all([
@@ -130,6 +132,7 @@ export const updateProjectWithTransaction = async (id: number, data: UpdateProje
         duration: data.duration,
         lineup: data.lineup ?? 'FULL',
         review: data.review,
+        keywords: data.keywords,
       },
     });
 

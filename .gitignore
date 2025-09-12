@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+*.pem
+.husky
+# prisma/migrations/
+dist/
+build/
+out/
+coverage/
+*.log
+logs/
+src/generated/prisma/
+firebase-config.env

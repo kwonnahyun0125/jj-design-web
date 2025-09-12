@@ -1,8 +1,9 @@
 node_modules/
 .DS_Store
 .env
+*.pem
 .husky
-prisma/migrations/
+# prisma/migrations/
 dist/
 build/
 out/

@@ -8,8 +8,6 @@ import { notFoundHandler } from './handlers/not-found-handler';
 import rootRouter from './routers/root-router';
 import projectRouter from './routers/projects-router';
 import imageUploadRouter from './routers/image-upload-router';
-//import projectImageRouter from './routers/project-image-router';
-//import keywordRouter from './routers/keyword-router';
 import authRouter from './routers/auth-router';
 import consultingRouter from './routers/consultings-router';
 import noticeRouter from './routers/notice-router';

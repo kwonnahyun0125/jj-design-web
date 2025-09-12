@@ -8,8 +8,9 @@ import { handleGetHealthCheck } from '../controllers/root-controller';
 // 다른 프로젝트들을 보니 portfolios.get 으로 직관적으로 쓰는 경우가 많아서 따라했습니다.
 // 대신 APP.TS 에서 불러올 때엔 rootRouter 로 불러오면 됩니다.
 
-const root = express.Router();
+const rootRouter = express.Router();
 
-root.get('/', handleGetHealthCheck);
+rootRouter.get('/', handleGetHealthCheck);
+rootRouter.get('/health', handleGetHealthCheck);
 
-export default root;
+export default rootRouter;

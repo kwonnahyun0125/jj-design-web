@@ -26,6 +26,8 @@ services:
       - ./admin-dist:/var/www/admin-dist
       - ./user-dist:/var/www/user-dist
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./letsencrypt:/var/www/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - api
   db:

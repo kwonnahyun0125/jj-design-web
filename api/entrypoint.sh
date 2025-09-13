@@ -1,14 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -e
 
-echo "Running prisma generate..."
-npx prisma generate
+echo "[entrypoint] node: $(node -v)"
+echo "[entrypoint] npm : $(npm -v)"
 
-echo "Running migrations..."
-npx prisma migrate deploy
+# 1) 런타임에서 Prisma Client 반드시 생성
+echo "[entrypoint] prisma generate..."
+npx -y prisma@6.14.0 generate --schema=prisma/schema.prisma
 
-echo "Seeding database..."
-npm run seed
+# 2) 마이그레이션 (실패해도 서버는 일단 띄움)
+if [ "$SKIP_MIGRATIONS" != "1" ]; then
+  echo "[entrypoint] prisma migrate deploy..."
+  if ! npx -y prisma@6.14.0 migrate deploy; then
+    echo "[entrypoint][WARN] migrate deploy failed. Continue to start server."
+  fi
+else
+  echo "[entrypoint] SKIP_MIGRATIONS=1 -> skip migrate"
+fi
 
-echo "Starting server..."
-npm start
+# 3) 서버 기동
+echo "[entrypoint] start server..."
+exec node dist/src/app.js

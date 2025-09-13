@@ -24,7 +24,7 @@ export const uploadImages: RequestHandler = async (req, res, next) => {
         await uploadBufferToS3(key, buffer, mimetype);
 
         // 읽기용 서명 URL 발급 (필요 기간 조절 가능)
-        const url = await getSignedGetUrl(key, 60 * 60 * 24 * 30); // 30일
+        const url = await getSignedGetUrl(key, 60 * 60); // 1시간
         return url;
       })
     );

@@ -33,6 +33,7 @@ app.use(cookieParser());
 app.use(rootRouter);
 app.use('/projects', projectRouter);
 app.use('/api', imageUploadRouter);
+app.use('/', imageUploadRouter);
 app.use(authRouter);
 app.use('/consultings', consultingRouter);
 app.use(noticeRouter);

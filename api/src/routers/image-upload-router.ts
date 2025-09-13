@@ -1,20 +1,18 @@
 import { Router } from 'express';
-import uploadToMemory from '../middlewares/multer';
-import {
-  uploadImages,
-  getSignedUrlOne,
-  getSignedUrlMany,
-} from '../controllers/image-upload-controller';
+import multer from 'multer';
+import { uploadImages } from '../controllers/image-upload-controller';
 
 const router = Router();
 
-// 업로드(버퍼 업로드 → private 저장)
-router.post('/images/upload', uploadToMemory.array('images'), uploadImages);
+// 메모리 스토리지 + 제한(사이즈, 개수)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+    files: 10, // 최대 10개
+  },
+});
 
-// 단건 프리사인드 GET
-router.get('/images/signed-url', getSignedUrlOne);
-
-// 다건 프리사인드 GET
-router.post('/images/signed-urls', getSignedUrlMany);
+router.post('/images', upload.array('images', 10), uploadImages);
 
 export default router;

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 const REGION = process.env.AWS_REGION ?? 'ap-northeast-2';
 export const BUCKET = process.env.S3_BUCKET as string;
 
@@ -23,13 +21,16 @@ export async function uploadBufferToS3(key: string, buffer: Buffer, contentType?
       Key: key,
       Body: buffer,
       ContentType: contentType,
-      ACL: 'private',
+      ACL: 'public-read',
+      CacheControl: 'public, max-age=31536000, immutable',
     })
   );
 }
 
-/** 서명된 GET URL 발급 */
-export async function getSignedGetUrl(key: string, expiresInSeconds = 60 * 60 * 24 * 7) {
-  const cmd = new GetObjectCommand({ Bucket: BUCKET, Key: key });
-  return getSignedUrl(s3, cmd, { expiresIn: expiresInSeconds });
+export function toPublicUrl(key: string): string {
+  const base =
+    process.env.CDN_BASE_URL?.replace(/\/+$/, '') ?? `https://${BUCKET}.s3.${REGION}.amazonaws.com`;
+  // 안전한 경로 인코딩
+  const safeKey = key.split('/').map(encodeURIComponent).join('/');
+  return `${base}/${safeKey}`;
 }

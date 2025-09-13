@@ -4,7 +4,7 @@ import { uploadImages } from '../controllers/image-upload-controller';
 
 const router = Router();
 
-// 메모리 스토리지 + 제한(사이즈, 개수)
+// 메모리 스토리지 + 업로드 제한(사이즈/개수)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -13,6 +13,6 @@ const upload = multer({
   },
 });
 
-router.post('/images', upload.array('images', 10), uploadImages);
+router.post('/images/upload', upload.any(), uploadImages);
 
 export default router;

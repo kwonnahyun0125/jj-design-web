@@ -10,6 +10,8 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
+      - S3_BUCKET=jj-design-web-storage
+      - AWS_REGION=ap-northeast-2
     expose:
       - '3001'
     depends_on:

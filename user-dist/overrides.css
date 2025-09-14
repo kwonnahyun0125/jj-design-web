@@ -1,15 +1,14 @@
-/* === JJ-DESIGN overrides.css (MOBILE-ONLY FINAL PATCH) ===
+/* === JJ-DESIGN overrides.css (MOBILE-ONLY FINAL) ===
    Path: /srv/jj/jj-design-web/user-dist/overrides.css
    Note: 모든 규칙은 @media (max-width:768px) 내부 — PC 영향 없음
 */
 
 @media (max-width: 768px) {
 
-  /* 0) 디버그 배지 */
+  /* 0) 디버그 배지 (확인 후 제거 가능) */
   body::after {
     content: "overrides.css: mobile active";
-    position: fixed;
-    right: 8px; bottom: 8px;
+    position: fixed; right: 8px; bottom: 8px;
     padding: 4px 6px;
     font: 11px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     color: #fff; background: rgba(0,0,0,.65);
@@ -18,121 +17,13 @@
     pointer-events: none;
   }
 
-  /* 1) 큰 타이틀/본문 축소 */
-  .hero h1, .hero h2,
-  .banner h1, .banner h2,
-  .full h1, .full h2 {
-    font-size: clamp(20px, 6vw, 26px) !important;
-    line-height: 1.3 !important;
-    margin: 0.3em 0 !important;
-    white-space: normal !important;
-    letter-spacing: normal !important;
-    word-break: keep-all !important;
-    text-shadow: none !important;
-    text-align: left !important;
-  }
-
-  .hero p, .banner p, .full p {
-    font-size: clamp(14px, 3.8vw, 15px) !important;
-    line-height: 1.4 !important;
-    opacity: .95 !important;
-    margin: 0.25em 0 0.5em !important;
-  }
-
-  .hero button, .banner button, .full button {
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    padding: 8px 12px !important;
-    border-radius: 8px !important;
-  }
-
-  /* 2) 세로쓰기 → 가로 */
-  .vertical, .vertical-text, .rotate-90,
-  [class*="vertical"], [style*="writing-mode"] {
-    writing-mode: horizontal-tb !important;
-    transform: none !important;
-    white-space: normal !important;
-    letter-spacing: normal !important;
-  }
-
-  /* 3) 절대배치 오버레이: 터치 통과 + 폰트 강제 축소 */
+  /* 1) 배너/히어로: 오버레이 텍스트를 하단 중앙으로 통일 */
   .hero  [style*="position: absolute"][style*="z-index"],
   .banner[style*="position: absolute"][style*="z-index"],
   .full  [style*="position: absolute"][style*="z-index"] {
-    pointer-events: none !important;
-    left: 16px !important;
-    right: 16px !important;
-    bottom: 16px !important;
-    width: auto !important;
-    transform: none !important;
-  }
-
-  /* 버튼/링크만 다시 클릭 가능 */
-  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
-  .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
-  .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
-    pointer-events: auto !important;
-  }
-
-  /* 인라인 font-size까지 무조건 줄이기 */
-  .hero  [style*="position: absolute"][style*="z-index"] *,
-  .banner[style*="position: absolute"][style*="z-index"] *,
-  .full  [style*="position: absolute"][style*="z-index"] * {
-    font-size: clamp(16px, 5.5vw, 26px) !important;
-    line-height: 1.3 !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-    letter-spacing: normal !important;
-    text-shadow: none !important;
-  }
-
-  /* 4) 슬라이더 제스처/레이아웃 */
-  .swiper, .embla { touch-action: pan-y !important; }
-  .swiper-wrapper, .embla__container { display: flex !important; }
-  .swiper-slide, .embla__slide { flex: 0 0 100% !important; min-width: 100% !important; }
-
-  /* 5) 내비 버튼 항상 활성 */
-  .slider-nav, .swiper-button-prev, .swiper-button-next, .embla__button {
-    position: relative; z-index: 5; pointer-events: auto;
-  }
-
-  /* 6) 카드/프로젝트 텍스트 줄바꿈 */
-  .card, .project-card, .list-item { min-width: 0; }
-  .card h3, .project-card h3, .list-item h3,
-  .card .title, .project-card .title {
-    font-size: clamp(16px, 4.5vw, 20px) !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-  }
-
-  /* 7) 인라인 스타일 강제 덮어쓰기 */
-  h1[style], h2[style], h3[style],
-  p[style], button[style] {
-    font-size: clamp(18px, 5vw, 26px) !important;
-    line-height: 1.3 !important;
-    text-shadow: none !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-    letter-spacing: normal !important;
-  }
-
-  button[style] {
-    font-size: 14px !important;
-    padding: 6px 10px !important;
-    border-radius: 6px !important;
-  }
-
-  /* 1) 인라인 absolute 오버레이의 '위치' 고정: 아래쪽 중앙에 넓게 배치 */
-  .hero  [style*="position: absolute"][style*="z-index"],
-  .banner[style*="position: absolute"][style*="z-index"],
-  .full  [style*="position: absolute"][style*="z-index"] {
-    /* 위치 강제 */
-    top: auto !important;                     /* PC용 top:50% 같은 값 제거 */
-    bottom: 10% !important;                   /* 이미지 하단에서 약간 띄우기 */
-    left: 0 !important; 
-    right: 0 !important;
-    transform: none !important;               /* translate(-50%) 제거 */
-    width: 100% !important;
+    /* 위치를 하단 중앙으로 고정 */
+    top: auto !important; bottom: 10% !important; left: 0 !important; right: 0 !important;
+    width: 100% !important; transform: none !important;
 
     /* 중앙 정렬 레이아웃 */
     display: flex !important;
@@ -140,12 +31,12 @@
     align-items: center !important;
     justify-content: flex-end !important;
     gap: 8px !important;
-    padding: 0 20px !important;               /* 좌우 안전 여백 */
-    pointer-events: none !important;          /* 슬라이드 스와이프 방해 금지 */
-    text-align: center !important;            /* 텍스트 중앙정렬 */
+    padding: 0 20px !important;  /* 좌우 안전 여백 */
+    pointer-events: none !important;   /* 스와이프 방해 금지 */
+    text-align: center !important;
   }
 
-  /* 버튼/링크만 클릭 가능하게 복구 + 크기 살짝 정리 */
+  /* 버튼만 다시 클릭 가능 */
   .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
   .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
   .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
@@ -157,35 +48,67 @@
     border-radius: 10px !important;
   }
 
-  /* 2) 제목·본문 타이포 다시 균형(중앙정렬 기준으로 톤다운) */
+  /* 2) 큰 제목/본문 크기 조정 (인라인 스타일 포함 모든 경우) */
   .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
   .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
-  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2) {
+  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  h1[style], h2[style] {
     font-size: clamp(20px, 5.5vw, 26px) !important;
     line-height: 1.25 !important;
     letter-spacing: normal !important;
     text-shadow: none !important;
     margin: 0.1em 0 !important;
-    max-width: 24ch !important;               /* 한 줄 길이 제한 → 가독성 */
+    max-width: 24ch !important; /* 가독성 */
   }
 
   .hero  [style*="position: absolute"][style*="z-index"] p,
   .banner[style*="position: absolute"][style*="z-index"] p,
-  .full  [style*="position: absolute"][style*="z-index"] p {
+  .full  [style*="position: absolute"][style*="z-index"] p,
+  p[style] {
     font-size: clamp(14px, 3.8vw, 15px) !important;
     line-height: 1.4 !important;
     opacity: .95 !important;
     margin: 0.25em 0 0.4em !important;
     max-width: 28ch !important;
+    text-shadow: none !important;
   }
 
-  /* 3) 장식·덮개는 터치 막지 않음 */
+  button[style] {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  /* 3) 세로쓰기/회전 → 가로 */
+  .vertical, .vertical-text, .rotate-90,
+  [class*="vertical"], [style*="writing-mode"] {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    white-space: normal !important;
+    letter-spacing: normal !important;
+  }
+
+  /* 4) 장식/그라디언트는 터치 막지 않음 */
   .hero::before, .hero::after,
   .banner::before, .banner::after,
   .full::before, .full::after { pointer-events: none !important; }
 
-  /* 4) 스와이프 제스처는 세로만 허용 */
+  /* 5) 슬라이더 제스처/레이아웃 안정화 */
   .swiper, .embla, .full { touch-action: pan-y !important; }
+  .swiper-wrapper, .embla__container { display: flex !important; }
+  .swiper-slide, .embla__slide { flex: 0 0 100% !important; min-width: 100% !important; }
+
+  /* 6) 내비 버튼 항상 클릭 가능 */
+  .slider-nav, .swiper-button-prev, .swiper-button-next, .embla__button {
+    position: relative; z-index: 5; pointer-events: auto;
+  }
+
+  /* 7) 카드/프로젝트 목록 텍스트 줄바꿈 */
+  .card, .project-card, .list-item { min-width: 0; }
+  .card h3, .project-card h3, .list-item h3,
+  .card .title, .project-card .title {
+    font-size: clamp(16px, 4.5vw, 20px) !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+  }
 }
-
-

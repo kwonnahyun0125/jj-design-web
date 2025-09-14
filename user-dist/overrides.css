@@ -1,4 +1,4 @@
-/* === JJ-DESIGN overrides.css (MOBILE-ONLY FINAL v7) ===
+/* === JJ-DESIGN overrides.css (MOBILE-ONLY FINAL v8) ===
    Path : /srv/jj/jj-design-web/user-dist/overrides.css
    Scope: @media (max-width:768px) 내부만 적용 → PC 영향 없음
 */
@@ -18,30 +18,13 @@
   }
 
   /* ----------------------------------------------------
-     A) ‘첫 화면 배너’처럼 뷰포트 높이(100vh) 쓰는 큰 영역에서
-        인라인 absolute 오버레이를 왼쪽 정렬로 강제
+     A) 큰 배너/히어로 영역 오버레이: 왼쪽 정렬
      ---------------------------------------------------- */
-
-  /* 1) 배너 컨테이너 추정: swiper/slide/hero/banner/full/100vh */
-  :is(
-    [class*="swiper"],
-    [class*="slide"],
-    [data-swiper],
-    [data-carousel],
-    [class*="hero"],
-    [class*="banner"],
-    .hero, .banner, .full,
-    .w-full
-  ):has(
-    > [style*="100vh"],
-    > [style*="calc(100vh"],
-    > [style*="height:100vh"],
-    > [style*="height: 100vh"]
-  )
-  :is([style*="position:absolute"], [style*="position: absolute"]) {
-    /* 위치/레이아웃 */
+  .hero  [style*="position: absolute"][style*="z-index"],
+  .banner[style*="position: absolute"][style*="z-index"],
+  .full  [style*="position: absolute"][style*="z-index"] {
     top: auto !important;
-    bottom: 10% !important;
+    bottom: 18% !important;              /* ← 기존보다 살짝 위로 */
     left: 16px !important;
     right: auto !important;
     width: auto !important;
@@ -49,79 +32,74 @@
 
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important; /* ← 왼쪽 정렬 */
+    align-items: flex-start !important;  /* ← 왼쪽 정렬 */
     justify-content: flex-end !important;
     gap: 6px !important;
     padding: 0 16px !important;
 
-    /* 제스처 간섭 제거 (텍스트는 통과, 버튼만 복구) */
-    pointer-events: none !important;
+    pointer-events: none !important;     /* 텍스트 터치 통과 */
     text-align: left !important;
   }
 
-  /* 2) 오버레이 내부 버튼/링크는 클릭 가능하게 복구 */
-  :is(
-    [class*="swiper"], [class*="slide"], [data-swiper], [data-carousel],
-    [class*="hero"], [class*="banner"], .hero, .banner, .full, .w-full
-  )
-  :is([style*="position:absolute"], [style*="position: absolute"])
-  :is(a, button) {
+  /* 버튼/링크만 클릭 복구 */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
+  .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
     pointer-events: auto !important;
-    align-self: flex-start !important;
+    align-self: flex-start !important;   /* 버튼도 왼쪽으로 */
     font-size: 15px !important;
     font-weight: 600 !important;
     padding: 9px 14px !important;
     border-radius: 10px !important;
   }
 
-  /* 3) 큰 제목/본문 타이포 축소 + 가독성 제한 */
-  :is(
-    [class*="swiper"], [class*="slide"], [data-swiper], [data-carousel],
-    [class*="hero"], [class*="banner"], .hero, .banner, .full, .w-full
-  )
-  :is([style*="position:absolute"], [style*="position: absolute"])
-  :is(h1, h2) {
+  /* ----------------------------------------------------
+     B) 텍스트 크기 조정
+     ---------------------------------------------------- */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  h1[style], h2[style] {
     font-size: clamp(20px, 5.5vw, 26px) !important;
     line-height: 1.25 !important;
-    letter-spacing: normal !important;
-    text-shadow: none !important;
     margin: 0.1em 0 !important;
-    max-width: 24ch !important;
+    text-shadow: none !important;
+    max-width: 26ch !important;
   }
 
-  :is(
-    [class*="swiper"], [class*="slide"], [data-swiper], [data-carousel],
-    [class*="hero"], [class*="banner"], .hero, .banner, .full, .w-full
-  )
-  :is([style*="position:absolute"], [style*="position: absolute"])
-  p {
+  .hero  [style*="position: absolute"][style*="z-index"] p,
+  .banner[style*="position: absolute"][style*="z-index"] p,
+  .full  [style*="position: absolute"][style*="z-index"] p,
+  p[style] {
     font-size: clamp(14px, 3.8vw, 15px) !important;
     line-height: 1.4 !important;
-    opacity: .95 !important;
     margin: 0.25em 0 0.4em !important;
-    max-width: 28ch !important;
     text-shadow: none !important;
+    max-width: 32ch !important;
   }
 
-  /* 4) 인라인 text-shadow가 있으면 제거 */
+  /* ----------------------------------------------------
+     C) 기타 보정
+     ---------------------------------------------------- */
   [style*="text-shadow"] { text-shadow: none !important; }
 
-  /* ----------------------------------------------------
-     B) 슬라이더 제스처/레이아웃 안정화 (모바일만)
-     ---------------------------------------------------- */
-  .swiper, .embla { touch-action: pan-y !important; }
+  .vertical, .vertical-text, .rotate-90,
+  [class*="vertical"], [style*="writing-mode"] {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+  }
+
+  /* 슬라이드 제스처/화살표 보정 */
+  .swiper, .embla, .full { touch-action: pan-y !important; }
   .swiper-wrapper, .embla__container { display: flex !important; }
   .swiper-slide, .embla__slide { flex: 0 0 100% !important; min-width: 100% !important; }
 
-  /* 내비/화살표는 항상 클릭 가능 */
   .slider-nav, .swiper-button-prev, .swiper-button-next, .embla__button {
-    position: relative; z-index: 5; pointer-events: auto;
+    position: relative; z-index: 50 !important; pointer-events: auto;
+    opacity: 1 !important; visibility: visible !important;
   }
 
-  /* ----------------------------------------------------
-     C) 카드/프로젝트 목록 텍스트 줄바꿈 보정
-     ---------------------------------------------------- */
-  .card, .project-card, .list-item { min-width: 0; }
+  /* 카드/프로젝트 줄바꿈 */
   .card h3, .project-card h3, .list-item h3,
   .card .title, .project-card .title {
     font-size: clamp(16px, 4.5vw, 20px) !important;

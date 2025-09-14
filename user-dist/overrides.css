@@ -154,3 +154,44 @@
   /* 스와이프 제스처 안정화 */
   .full, .swiper, .embla { touch-action: pan-y !important; }
 }
+/* ========== [HOTFIX-01] 절대배치 오버레이 + 인라인 font-size 강제 축소 ========== */
+@media (max-width: 768px) {
+  /* 절대배치 컨테이너 전체를 터치 통과 (화살표/스와이프가 먹게) */
+  .full [style*="position: absolute"][style*="z-index"],
+  .hero [style*="position: absolute"][style*="z-index"],
+  .banner [style*="position: absolute"][style*="z-index"] {
+    pointer-events: none !important;
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    width: auto !important;
+  }
+  /* 버튼/링크만 다시 클릭 허용 */
+  .full [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .hero [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner [style*="position: absolute"][style*="z-index"] :is(a,button) {
+    pointer-events: auto !important;
+  }
+
+  /* 인라인 font-size가 걸린 어떤 요소든 “큰 글자”면 다 줄인다 */
+  .full [style*="font-size"], .hero [style*="font-size"], .banner [style*="font-size"] {
+    font-size: clamp(20px, 6vw, 28px) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    letter-spacing: normal !important;
+    text-shadow: none !important;
+    margin: 0.25em 0 !important;
+  }
+
+  /* 본문급 텍스트 추정(인라인 18~24px대)도 살짝 줄이기 */
+  .full [style*="font-size: 18"], .full [style*="font-size:18"],
+  .hero [style*="font-size: 18"], .hero [style*="font-size:18"],
+  .banner [style*="font-size: 18"], .banner [style*="font-size:18"] {
+    font-size: clamp(14px, 3.8vw, 16px) !important;
+    line-height: 1.4 !important;
+  }
+
+  /* iOS 제스처 충돌 최소화: 세로 스와이프만 허용 */
+  .swiper, .embla { touch-action: pan-y !important; }
+}

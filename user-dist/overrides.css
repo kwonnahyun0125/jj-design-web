@@ -224,3 +224,66 @@ img, video { max-width: 100% !important; height: auto !important; }
     font-size: clamp(14px, 3.8vw, 16px) !important;
   }
 }
+
+/* ====== MOBILE HOTFIX: absolute overlay text + swipe ====== */
+@media (max-width: 768px) {
+  /* 1) 텍스트 오버레이 컨테이너는 터치 통과, 버튼만 다시 활성화 */
+  .hero [style*="position: absolute"][style*="z-index"],
+  .banner [style*="position: absolute"][style*="z-index"],
+  .full [style*="position: absolute"][style*="z-index"] {
+    pointer-events: none !important;
+    /* 모바일 배치 좀 더 안전하게 */
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    width: auto !important;
+  }
+  .hero [style*="position: absolute"][style*="z-index"] button,
+  .banner [style*="position: absolute"][style*="z-index"] button,
+  .full [style*="position: absolute"][style*="z-index"] button {
+    pointer-events: auto !important; /* 버튼만 클릭 허용 */
+  }
+
+  /* 2) 인라인 font-size 강제 제압 */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2) {
+    font-size: clamp(20px, 6vw, 28px) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    letter-spacing: normal !important;
+    margin: 0.25em 0 !important;
+    text-shadow: none !important;
+  }
+
+  .hero  [style*="position: absolute"][style*="z-index"] p,
+  .banner[style*="position: absolute"][style*="z-index"] p,
+  .full  [style*="position: absolute"][style*="z-index"] p {
+    font-size: clamp(14px, 3.8vw, 16px) !important;
+    line-height: 1.4 !important;
+    opacity: .95 !important;
+    margin: 0.25em 0 0.5em !important;
+  }
+
+  .hero  [style*="position: absolute"][style*="z-index"] button,
+  .banner[style*="position: absolute"][style*="z-index"] button,
+  .full  [style*="position: absolute"][style*="z-index"] button {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* 3) 슬라이더 스와이프 제스처 안정화 (iOS) */
+.swiper, .embla { touch-action: pan-y !important; }
+
+/* 4) 배너 장식/그라디언트가 터치를 막지 않게 */
+.hero::before, .hero::after,
+.banner::before, .banner::after,
+.full::before, .full::after { pointer-events: none !important; }
+
+/* 5) 화살표/내비 버튼은 항상 클릭 가능 */
+.slider-nav, .swiper-button-prev, .swiper-button-next,
+.embla__button { position: relative; z-index: 5; pointer-events: auto; }

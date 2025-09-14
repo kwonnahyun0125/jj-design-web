@@ -121,70 +121,87 @@ img, video { max-width: 100% !important; height: auto !important; }
 /* Example: furniture detail two-column to single column on mobile */
 .furniture-detail .gallery, .furniture-detail .info { min-width: 0; }  /* prevent overflow */
 
-/* Hero/Banner 텍스트가 화면을 덮지 않게 */
-@media (max-width: 768px) {
-  .hero h1, .hero h2, .banner h1, .banner h2 {
-    font-size: clamp(20px, 6vw, 28px) !important;
-    line-height: 1.25 !important;
-    margin: 0.3em 0 !important;
-    word-break: keep-all !important;
-    white-space: normal !important;
+/* ===========================
+   Hero / Banner 텍스트 보정
+   =========================== */
+   @media (max-width: 768px) {
+    .hero h1, .hero h2, .banner h1, .banner h2 {
+      font-size: clamp(20px, 6vw, 28px) !important;
+      line-height: 1.25 !important;
+      margin: 0.3em 0 !important;
+      word-break: keep-all !important;
+      white-space: normal !important;
+    }
+  
+    .hero p, .banner p {
+      font-size: clamp(14px, 3.8vw, 16px) !important;
+      opacity: .95;
+    }
+  
+    /* 배너 안쪽 여백 조금 더 */
+    .hero .content, .banner .content {
+      padding: clamp(12px, 5vw, 24px) !important;
+    }
   }
-  .hero p, .banner p {
-    font-size: clamp(14px, 3.8vw, 16px) !important;
-    opacity: .95;
+  
+  /* ===========================
+     세로 글자 → 모바일에서는 가로
+     =========================== */
+  @media (max-width: 768px) {
+    .vertical, .vertical-text, .rotate-90,
+    [class*="vertical"], [style*="writing-mode"] {
+      writing-mode: horizontal-tb !important;
+      transform: none !important;
+      white-space: normal !important;
+      letter-spacing: normal !important;
+    }
+  
+    /* 제목/라벨이 세로로 쪼개지는 현상 방지 */
+    h1, h2, h3, .title, .label, .tag, .chip {
+      word-break: keep-all !important;
+      white-space: normal !important;
+    }
   }
-  /* 배너 안쪽 여백 조금 더 */
-  .hero .content, .banner .content {
-    padding: clamp(12px, 5vw, 24px) !important;
+  
+  /* ===========================
+     슬라이더 / 배너 공통 보정
+     =========================== */
+  .hero, .banner { position: relative; }
+  
+  /* 배너 위 장식/그라디언트가 터치를 막지 않게 */
+  .hero::before, .hero::after,
+  .banner::before, .banner::after {
+    pointer-events: none;
   }
-}
-
-/* 모바일에선 세로쓰기/회전 글자를 가로로 */
-@media (max-width: 768px) {
-  /* 이름 추정 클래스들 + writing-mode 지정된 요소를 가로로 */
-  .vertical, .vertical-text, .rotate-90,
-  [class*="vertical"], [style*="writing-mode"] {
-    writing-mode: horizontal-tb !important;
-    transform: none !important;
-    white-space: normal !important;
-    letter-spacing: normal !important;
+  
+  /* 화살표/내비 버튼이 텍스트 아래 깔리지 않도록 */
+  .slider-nav, .swiper-button-prev, .swiper-button-next,
+  .embla__button {
+    position: relative;
+    z-index: 5;
+    pointer-events: auto;
   }
-  /* 제목/라벨이 세로로 쪼개지는 현상 방지 */
-  h1, h2, h3, .title, .label, .tag, .chip {
-    word-break: keep-all !important;
-    white-space: normal !important;
-  }
-}
-
-/* 라이브러리별로 흔한 클래스들: embla/swiper/slider/carousel */
-@media (max-width: 768px) {
-  .embla, .embla__viewport, .swiper, .slider, .carousel, .slides, .hero, .banner {
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pan-x;
-  }
-  .embla__container, .swiper-wrapper, .slider-track, .carousel-track, .slides,
-  .embla__slide, .swiper-slide, .slide, .carousel-item {
-    display: flex;
-  }
-  .embla__slide, .swiper-slide, .slide, .carousel-item {
+  
+  /* Swiper / Embla 레이아웃 안정화 */
+  .swiper, .embla { overflow: hidden; }
+  .swiper-wrapper, .embla__container { display: flex; }
+  .swiper-slide, .embla__slide {
+    flex: 0 0 100%;
     min-width: 100%;
-    scroll-snap-align: center;
   }
-  /* 배너 위 그라디언트/데코가 터치 막지 않도록 */
-  .hero::before, .hero::after, .banner::before, .banner::after { pointer-events: none; }
-}
-
-@media (max-width: 768px) {
-  .card, .project-card, .list-item {
-    min-width: 0; /* overflow로 밀리는 현상 방지 */
+  
+  /* ===========================
+     카드 / 프로젝트 리스트 보정
+     =========================== */
+  @media (max-width: 768px) {
+    .card, .project-card, .list-item {
+      min-width: 0; /* overflow로 밀리는 현상 방지 */
+    }
+  
+    .card h3, .project-card h3, .list-item h3,
+    .card .title, .project-card .title {
+      font-size: clamp(16px, 4.5vw, 20px) !important;
+      white-space: normal !important;
+      word-break: keep-all !important;
+    }
   }
-  .card h3, .project-card h3, .list-item h3,
-  .card .title, .project-card .title {
-    font-size: clamp(16px, 4.5vw, 20px) !important;
-    white-space: normal !important;
-    word-break: keep-all !important;
-  }
-}

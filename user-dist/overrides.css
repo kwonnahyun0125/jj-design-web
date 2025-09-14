@@ -121,4 +121,71 @@
     padding: 6px 10px !important;
     border-radius: 6px !important;
   }
+
+  /* 1) 인라인 absolute 오버레이의 '위치' 고정: 아래쪽 중앙에 넓게 배치 */
+  .hero  [style*="position: absolute"][style*="z-index"],
+  .banner[style*="position: absolute"][style*="z-index"],
+  .full  [style*="position: absolute"][style*="z-index"] {
+    /* 위치 강제 */
+    top: auto !important;                     /* PC용 top:50% 같은 값 제거 */
+    bottom: 10% !important;                   /* 이미지 하단에서 약간 띄우기 */
+    left: 0 !important; 
+    right: 0 !important;
+    transform: none !important;               /* translate(-50%) 제거 */
+    width: 100% !important;
+
+    /* 중앙 정렬 레이아웃 */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    padding: 0 20px !important;               /* 좌우 안전 여백 */
+    pointer-events: none !important;          /* 슬라이드 스와이프 방해 금지 */
+    text-align: center !important;            /* 텍스트 중앙정렬 */
+  }
+
+  /* 버튼/링크만 클릭 가능하게 복구 + 크기 살짝 정리 */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
+  .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
+    pointer-events: auto !important;
+    align-self: center !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    padding: 9px 14px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 2) 제목·본문 타이포 다시 균형(중앙정렬 기준으로 톤다운) */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2) {
+    font-size: clamp(20px, 5.5vw, 26px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: normal !important;
+    text-shadow: none !important;
+    margin: 0.1em 0 !important;
+    max-width: 24ch !important;               /* 한 줄 길이 제한 → 가독성 */
+  }
+
+  .hero  [style*="position: absolute"][style*="z-index"] p,
+  .banner[style*="position: absolute"][style*="z-index"] p,
+  .full  [style*="position: absolute"][style*="z-index"] p {
+    font-size: clamp(14px, 3.8vw, 15px) !important;
+    line-height: 1.4 !important;
+    opacity: .95 !important;
+    margin: 0.25em 0 0.4em !important;
+    max-width: 28ch !important;
+  }
+
+  /* 3) 장식·덮개는 터치 막지 않음 */
+  .hero::before, .hero::after,
+  .banner::before, .banner::after,
+  .full::before, .full::after { pointer-events: none !important; }
+
+  /* 4) 스와이프 제스처는 세로만 허용 */
+  .swiper, .embla, .full { touch-action: pan-y !important; }
 }
+
+

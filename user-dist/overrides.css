@@ -115,3 +115,42 @@
     z-index:2147483647;
   }
 }
+
+/* ===== Strong clamp for inline-styled overlay (MOBILE ONLY) ===== */
+@media (max-width: 768px) {
+  /* 텍스트 오버레이 전체는 터치 통과 */
+  .full [style*="position: absolute"][style*="z-index"],
+  .hero [style*="position: absolute"][style*="z-index"],
+  .banner [style*="position: absolute"][style*="z-index"] {
+    pointer-events: none !important;
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    width: auto !important;
+  }
+
+  /* 오버레이 안 모든 자식 텍스트를 일괄 축소(태그/유틸 클래스/인라인 폰트사이즈까지 강제) */
+  .full  [style*="position: absolute"][style*="z-index"] * ,
+  .hero  [style*="position: absolute"][style*="z-index"] * ,
+  .banner[style*="position: absolute"][style*="z-index"] * {
+    font-size: clamp(16px, 5.5vw, 28px) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    letter-spacing: normal !important;
+    text-shadow: none !important;
+  }
+
+  /* 버튼/링크만 다시 클릭 가능하게 */
+  .full  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner[style*="position: absolute"][style*="z-index"] :is(a,button) {
+    pointer-events: auto !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+  }
+
+  /* 스와이프 제스처 안정화 */
+  .full, .swiper, .embla { touch-action: pan-y !important; }
+}

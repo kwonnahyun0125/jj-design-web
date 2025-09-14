@@ -1,105 +1,101 @@
-/* === JJ-DESIGN overrides.css (MOBILE ONLY) ===
+/* === JJ-DESIGN overrides.css (MOBILE-ONLY) ===
    Path: /srv/jj/jj-design-web/user-dist/overrides.css
-   Only affects max-width:768px (mobile/tablet portrait)
+   모든 규칙은 max-width:768px 이하에서만 동작 (PC 영향 X)
 */
 
-/* ===========================
-   1) Hero/Banner 텍스트 축소
-   =========================== */
-   @media (max-width: 768px) {
-    .hero h1, .hero h2,
-    .banner h1, .banner h2,
-    .full h1, .full h2 {
-      font-size: clamp(20px, 6vw, 28px) !important;
-      line-height: 1.25 !important;
-      margin: 0.3em 0 !important;
-      word-break: keep-all !important;
-      white-space: normal !important;
-    }
-  
-    .hero p, .banner p, .full p {
-      font-size: clamp(14px, 3.8vw, 16px) !important;
-      line-height: 1.4 !important;
-      opacity: .95 !important;
-      margin: 0.25em 0 0.5em !important;
-    }
-  
-    .hero .content, .banner .content, .full .content {
-      padding: clamp(12px, 5vw, 24px) !important;
-    }
+@media (max-width: 768px) {
+
+  /* 0) 안전 기본값 (모바일만) */
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; line-height: 1.5; overflow-x: hidden; word-break: keep-all; }
+  img, video, canvas, svg { max-width: 100%; height: auto; display: block; }
+
+  /* 1) Hero/Banner 텍스트 축소 */
+  .hero h1, .hero h2,
+  .banner h1, .banner h2,
+  .full h1, .full h2 {
+    font-size: clamp(20px, 6vw, 28px) !important;
+    line-height: 1.25 !important;
+    margin: 0.3em 0 !important;
+    white-space: normal !important;
+    letter-spacing: normal !important;
+    word-break: keep-all !important;
   }
-  
-  /* ===========================
-     2) 세로쓰기 → 가로로
-     =========================== */
-  @media (max-width: 768px) {
-    .vertical, .vertical-text, .rotate-90,
-    [class*="vertical"], [style*="writing-mode"] {
-      writing-mode: horizontal-tb !important;
-      transform: none !important;
-      white-space: normal !important;
-      letter-spacing: normal !important;
-    }
+  .hero p, .banner p, .full p {
+    font-size: clamp(14px, 3.8vw, 16px) !important;
+    line-height: 1.4 !important;
+    opacity: .95 !important;
+    margin: 0.25em 0 0.5em !important;
   }
-  
-  /* ===========================
-     3) 오버레이 텍스트 & 버튼
-     =========================== */
-  @media (max-width: 768px) {
-    .hero [style*="position: absolute"][style*="z-index"],
-    .banner [style*="position: absolute"][style*="z-index"],
-    .full [style*="position: absolute"][style*="z-index"] {
-      pointer-events: none !important;
-      left: 16px !important;
-      right: 16px !important;
-      bottom: 16px !important;
-      width: auto !important;
-    }
-  
-    .hero [style*="position: absolute"][style*="z-index"] button,
-    .banner [style*="position: absolute"][style*="z-index"] button,
-    .full [style*="position: absolute"][style*="z-index"] button {
-      pointer-events: auto !important;
-      font-size: 15px !important;
-      padding: 10px 14px !important;
-      border-radius: 10px !important;
-    }
+  .hero .content, .banner .content, .full .content {
+    padding: clamp(12px, 5vw, 24px) !important;
   }
-  
-  /* ===========================
-     4) 슬라이드 보정 (모바일 전용)
-     =========================== */
-  @media (max-width: 768px) {
-    .swiper, .embla { touch-action: pan-y !important; }
-    .swiper-wrapper, .embla__container { display: flex !important; }
-    .swiper-slide, .embla__slide {
-      flex: 0 0 100% !important;
-      min-width: 100% !important;
-    }
-  
-    .hero::before, .hero::after,
-    .banner::before, .banner::after,
-    .full::before, .full::after {
-      pointer-events: none !important;
-    }
-  
-    .slider-nav, .swiper-button-prev, .swiper-button-next,
-    .embla__button {
-      position: relative;
-      z-index: 5;
-      pointer-events: auto;
-    }
+
+  /* 2) 세로쓰기 → 가로 */
+  .vertical, .vertical-text, .rotate-90,
+  [class*="vertical"], [style*="writing-mode"] {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    white-space: normal !important;
+    letter-spacing: normal !important;
   }
-  
-  /* ===========================
-     5) 카드/프로젝트 보정
-     =========================== */
-  @media (max-width: 768px) {
-    .card, .project-card, .list-item { min-width: 0; }
-    .card h3, .project-card h3, .list-item h3 {
-      font-size: clamp(16px, 4.5vw, 20px) !important;
-      white-space: normal !important;
-      word-break: keep-all !important;
-    }
+
+  /* 3) 배너/히어로 오버레이(absolute) 터치 충돌 제거
+        - 캡처상 overlay는 인라인 style에 position:absolute; z-index:.. 가 들어있음 */
+  .hero  [style*="position: absolute"][style*="z-index"],
+  .banner[style*="position: absolute"][style*="z-index"],
+  .full  [style*="position: absolute"][style*="z-index"] {
+    pointer-events: none !important;       /* 터치는 슬라이드로 통과 */
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    width: auto !important;
   }
-  
+  /* 버튼만 다시 클릭 가능 */
+  .hero  [style*="position: absolute"][style*="z-index"] button,
+  .banner[style*="position: absolute"][style*="z-index"] button,
+  .full  [style*="position: absolute"][style*="z-index"] button {
+    pointer-events: auto !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 4) 큰 유틸리티 글자(Text-5xl 등) 강제 축소 */
+  .banner :is(h1,h2,[class*="text-5xl"],[class*="text-6xl"],[class*="text-7xl"]),
+  .hero   :is(h1,h2,[class*="text-5xl"],[class*="text-6xl"],[class*="text-7xl"]),
+  .full   :is(h1,h2,[class*="text-5xl"],[class*="text-6xl"],[class*="text-7xl"]) {
+    font-size: clamp(20px, 6vw, 28px) !important;
+    line-height: 1.25 !important;
+  }
+  .banner :is(p,[class*="text-xl"],[class*="text-2xl"]),
+  .hero   :is(p,[class*="text-xl"],[class*="text-2xl"]),
+  .full   :is(p,[class*="text-xl"],[class*="text-2xl"]) {
+    font-size: clamp(14px, 3.8vw, 16px) !important;
+  }
+
+  /* 5) 슬라이드 보정 (모바일에서만) */
+  .swiper, .embla { touch-action: pan-y !important; } /* iOS 제스처 충돌 완화 */
+  .swiper-wrapper, .embla__container { display: flex !important; }
+  .swiper-slide, .embla__slide {
+    flex: 0 0 100% !important;
+    min-width: 100% !important;
+  }
+  /* 배너 장식이 터치 막지 않게 */
+  .hero::before, .hero::after,
+  .banner::before, .banner::after,
+  .full::before, .full::after { pointer-events: none !important; }
+  /* 내비 버튼은 항상 클릭 가능 */
+  .slider-nav, .swiper-button-prev, .swiper-button-next,
+  .embla__button { position: relative; z-index: 5; pointer-events: auto; }
+
+  /* 6) 카드/프로젝트 리스트 */
+  .card, .project-card, .list-item { min-width: 0; }
+  .card h3, .project-card h3, .list-item h3,
+  .card .title, .project-card .title {
+    font-size: clamp(16px, 4.5vw, 20px) !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+  }
+}

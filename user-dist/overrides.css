@@ -111,4 +111,32 @@
     white-space: normal !important;
     word-break: keep-all !important;
   }
+
+  .hero  [style*="position: absolute"][style*="z-index"],
+  .banner[style*="position: absolute"][style*="z-index"],
+  .full  [style*="position: absolute"][style*="z-index"] {
+    top: auto !important;
+    bottom: 10% !important;
+    left: 16px !important;
+    right: auto !important;            /* 오른쪽 여백 해제 */
+    transform: none !important;
+    width: auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important; /* ← 왼쪽 정렬 */
+    justify-content: flex-end !important;
+    gap: 6px !important;
+    padding: 0 16px !important;
+    pointer-events: none !important;
+    text-align: left !important;        /* 텍스트 왼쪽 정렬 */
+  }
+
+  /* 버튼은 왼쪽 정렬 */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
+  .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
+    pointer-events: auto !important;
+    align-self: flex-start !important;  /* 버튼도 왼쪽으로 */
+  }
 }

@@ -1,39 +1,36 @@
 /* === JJ-DESIGN overrides.css (MOBILE ONLY) ===
-   - Path: /srv/jj/jj-design-web/user-dist/overrides.css
-   - Head 마지막에 연결:
-     <link rel="stylesheet" href="/overrides.css">
-   - 모든 규칙은 max-width:768px 이하(모바일)에서만 동작하도록 구성
+   Path: /srv/jj/jj-design-web/user-dist/overrides.css
+   Only affects max-width:768px (mobile/tablet portrait)
 */
 
 /* ===========================
-   0) 모바일 공통 글자/여백 최소 보정
+   1) Hero/Banner 텍스트 축소
    =========================== */
    @media (max-width: 768px) {
-    /* 큰 제목이 화면을 덮지 않게 축소 */
-    .hero h1, .hero h2, .banner h1, .banner h2 {
+    .hero h1, .hero h2,
+    .banner h1, .banner h2,
+    .full h1, .full h2 {
       font-size: clamp(20px, 6vw, 28px) !important;
       line-height: 1.25 !important;
       margin: 0.3em 0 !important;
       word-break: keep-all !important;
       white-space: normal !important;
-      letter-spacing: normal !important;
     }
   
-    .hero p, .banner p {
+    .hero p, .banner p, .full p {
       font-size: clamp(14px, 3.8vw, 16px) !important;
       line-height: 1.4 !important;
       opacity: .95 !important;
       margin: 0.25em 0 0.5em !important;
     }
   
-    /* 배너 안쪽 패딩 약간 확보 */
-    .hero .content, .banner .content {
+    .hero .content, .banner .content, .full .content {
       padding: clamp(12px, 5vw, 24px) !important;
     }
   }
   
   /* ===========================
-     1) 세로쓰기/회전 텍스트 → 가로로
+     2) 세로쓰기 → 가로로
      =========================== */
   @media (max-width: 768px) {
     .vertical, .vertical-text, .rotate-90,
@@ -43,79 +40,49 @@
       white-space: normal !important;
       letter-spacing: normal !important;
     }
-  
-    /* 제목/라벨이 세로로 쪼개지는 현상 방지 */
-    h1, h2, h3, .title, .label, .tag, .chip {
-      word-break: keep-all !important;
-      white-space: normal !important;
-    }
   }
   
   /* ===========================
-     2) 슬라이더/배너 오버레이 텍스트 & 스와이프 충돌 해소
+     3) 오버레이 텍스트 & 버튼
      =========================== */
   @media (max-width: 768px) {
-    /* (A) 인라인 style로 absolute + z-index 배치된 텍스트 블록을 안전하게 재배치 */
     .hero [style*="position: absolute"][style*="z-index"],
     .banner [style*="position: absolute"][style*="z-index"],
     .full [style*="position: absolute"][style*="z-index"] {
-      /* 텍스트 레이어가 스와이프를 가로채지 않도록 */
       pointer-events: none !important;
-  
-      /* 너무 모서리에 붙지 않도록 여백 보장 */
       left: 16px !important;
       right: 16px !important;
       bottom: 16px !important;
       width: auto !important;
     }
   
-    /* (B) 버튼만 다시 클릭 가능하게 복구 */
-    .hero  [style*="position: absolute"][style*="z-index"] button,
-    .banner[style*="position: absolute"][style*="z-index"] button,
-    .full  [style*="position: absolute"][style*="z-index"] button {
+    .hero [style*="position: absolute"][style*="z-index"] button,
+    .banner [style*="position: absolute"][style*="z-index"] button,
+    .full [style*="position: absolute"][style*="z-index"] button {
       pointer-events: auto !important;
-    }
-  
-    /* (C) 인라인 폰트 크기 강제 축소 (과도한 text-5xl 등 제압) */
-    .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
-    .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
-    .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2) {
-      font-size: clamp(20px, 6vw, 28px) !important;
-      line-height: 1.25 !important;
-      margin: 0.25em 0 !important;
-      text-shadow: none !important;
-      white-space: normal !important;
-      word-break: keep-all !important;
-    }
-  
-    .hero  [style*="position: absolute"][style*="z-index"] p,
-    .banner[style*="position: absolute"][style*="z-index"] p,
-    .full  [style*="position: absolute"][style*="z-index"] p {
-      font-size: clamp(14px, 3.8vw, 16px) !important;
-      line-height: 1.4 !important;
-      opacity: .95 !important;
-    }
-  
-    .hero  [style*="position: absolute"][style*="z-index"] button,
-    .banner[style*="position: absolute"][style*="z-index"] button,
-    .full  [style*="position: absolute"][style*="z-index"] button {
       font-size: 15px !important;
-      font-weight: 600 !important;
       padding: 10px 14px !important;
       border-radius: 10px !important;
     }
+  }
   
-    /* (D) iOS 제스처 충돌 감소: 세로 스크롤을 우선 */
+  /* ===========================
+     4) 슬라이드 보정 (모바일 전용)
+     =========================== */
+  @media (max-width: 768px) {
     .swiper, .embla { touch-action: pan-y !important; }
+    .swiper-wrapper, .embla__container { display: flex !important; }
+    .swiper-slide, .embla__slide {
+      flex: 0 0 100% !important;
+      min-width: 100% !important;
+    }
   
-    /* (E) 배너 장식/그라디언트가 터치를 막지 않도록 */
     .hero::before, .hero::after,
     .banner::before, .banner::after,
     .full::before, .full::after {
       pointer-events: none !important;
     }
   
-    /* (F) 화살표/내비 버튼은 항상 클릭 가능 */
     .slider-nav, .swiper-button-prev, .swiper-button-next,
     .embla__button {
       position: relative;
@@ -125,12 +92,11 @@
   }
   
   /* ===========================
-     3) 카드/프로젝트 리스트 텍스트 줄바꿈 안정화
+     5) 카드/프로젝트 보정
      =========================== */
   @media (max-width: 768px) {
     .card, .project-card, .list-item { min-width: 0; }
-    .card h3, .project-card h3, .list-item h3,
-    .card .title, .project-card .title {
+    .card h3, .project-card h3, .list-item h3 {
       font-size: clamp(16px, 4.5vw, 20px) !important;
       white-space: normal !important;
       word-break: keep-all !important;

@@ -39,6 +39,7 @@ app.use('/consultings', consultingRouter);
 app.use(noticeRouter);
 app.use(showroomRouter);
 app.use('/company', companyRouter);
+app.use('/', companyRouter);
 app.use('/api', companyRouter);
 app.use(furnitureRouter);
 app.use(rootRouter);

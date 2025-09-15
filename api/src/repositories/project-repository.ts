@@ -11,9 +11,9 @@ import { toCategory, toKeyword, toLineup, toSizeRanges } from '../utils/to-util'
 
 export const createProjectWithTransaction = async (data: CreateProjectRequest) => {
   return await prisma.$transaction(async (tx) => {
-    const keywordList = data.keywords
-      ?.map((keyword) => toKeyword(keyword))
-      .filter(Boolean) as Keyword[];
+    const keywordList = (data.keywords ?? [])
+      .map((keyword) => toKeyword(keyword))
+      .filter((k): k is Keyword => Boolean(k));
 
     let project = await tx.project.create({
       data: {
@@ -71,7 +71,8 @@ export const createProjectWithTransaction = async (data: CreateProjectRequest) =
 export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
   const { category, page = 1, size = 10, keyword, search, lineup, pyung } = query;
 
-  const categoryEnum = toCategory(category);
+  const categoryEnum = category ? toCategory(category) : undefined;
+
   const keywordEnum = toKeyword(keyword);
   const lineupEnum = toLineup(lineup);
   const sizeCondition = toSizeRanges(pyung);
@@ -79,7 +80,7 @@ export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
   const where = {
     isDeleted: false,
     ...(keywordEnum ? { keywords: { has: keywordEnum } } : {}),
-    category: categoryEnum,
+    ...(categoryEnum ? { category: categoryEnum } : {}), // category 있을 때만 필터
     ...(search
       ? {
           OR: [
@@ -120,6 +121,7 @@ export const getProjectDetailWithId = async (id: number) => {
     },
   });
 };
+
 export const updateProjectWithTransaction = async (id: number, data: UpdateProjectRequest) => {
   return await prisma.$transaction(async (tx) => {
     const project = await tx.project.update({

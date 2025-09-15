@@ -236,5 +236,97 @@
   /* 9) 제목/문단 왼쪽 정렬 보강 */
   :is(.swiper-slide,.hero,.banner) :is(h1,h2){ text-align:left !important; }
   :is(.swiper-slide,.hero,.banner) p{ text-align:left !important; }
-}
 
+  /* 0) 슬라이드 컨테이너 높이/여백 뒤죽박죽 방지 */
+  .swiper, .swiper-container, .swiper-wrapper, .swiper-slide,
+  .hero, .banner, .full {
+    position: relative !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: hidden !important;
+  }
+  .swiper-wrapper { align-items: stretch !important; }
+
+  /* 1) 배경 미디어는 가로 100%, 비율 유지 */
+  .swiper-slide img, .swiper-slide picture, .swiper-slide video,
+  .hero img, .banner img, .full img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: cover !important;
+  }
+
+  /* 2) “오버레이 텍스트 블록”을 어떤 경우든 왼쪽 하단으로 고정
+        - position:absolute 이기만 하면 잡는다 (z-index 조건 제거)
+        - Tailwind .absolute 클래스도 포함
+  */
+  .swiper-slide [style*="position:absolute"],
+  .swiper-slide [style*="position: absolute"],
+  .swiper-slide [class*="absolute"],
+  .hero  [style*="position:absolute"],  .hero  [class*="absolute"],
+  .banner[style*="position:absolute"],  .banner[class*="absolute"],
+  .full  [style*="position:absolute"],  .full  [class*="absolute"] {
+    left: 16px !important;
+    right: auto !important;
+    bottom: 18% !important;
+    top: auto !important;
+    transform: none !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 6px !important;
+    width: calc(100% - 32px) !important;   /* 좌우 여백 보장 */
+    max-width: 100% !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+  }
+
+  /* 3) 오버레이 내부에 남은 transform/right 값 싹 제거 */
+  :is(.swiper-slide,.hero,.banner,.full) [style*="right:"],
+  :is(.swiper-slide,.hero,.banner,.full) [style*="transform:"] {
+    left: 16px !important;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  /* 4) 텍스트 크기/정렬 보강 */
+  :is(.swiper-slide,.hero,.banner,.full) :is(h1,h2){
+    font-size: clamp(20px, 5.5vw, 26px) !important;
+    line-height: 1.25 !important;
+    margin: .1em 0 !important;
+    max-width: 26ch !important;
+    text-align: left !important;
+    text-shadow: none !important;
+  }
+  :is(.swiper-slide,.hero,.banner,.full) p{
+    font-size: clamp(14px, 3.8vw, 15px) !important;
+    line-height: 1.4 !important;
+    margin: .25em 0 .4em !important;
+    max-width: 32ch !important;
+    text-align: left !important;
+    text-shadow: none !important;
+  }
+
+  /* 5) 버튼은 클릭 가능 */
+  :is(.swiper-slide,.hero,.banner,.full) [style*="position:absolute"] :is(a,button),
+  :is(.swiper-slide,.hero,.banner,.full) [class*="absolute"] :is(a,button){
+    pointer-events: auto !important;
+    align-self: flex-start !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    padding: 9px 14px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 6) 하단 큰 공백 제거 (의도치 않은 마진/패딩 방지) */
+  :is(.swiper-slide,.hero,.banner,.full) [style*="margin-bottom"],
+  :is(.swiper-slide,.hero,.banner,.full) [style*="padding-bottom: 100vh"],
+  :is(.swiper-slide,.hero,.banner,.full) [style*="height: 100vh"]{
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+}

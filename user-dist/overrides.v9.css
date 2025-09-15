@@ -123,4 +123,48 @@
 
   /* 푸터·연락처 블록 간격 */
   footer, .footer { line-height: 1.5 !important; }
+
+    /* 오버레이 블록 자체를 항상 왼쪽 하단으로 */
+    .swiper-slide [style*="position: absolute"],
+    .hero [style*="position: absolute"],
+    .banner [style*="position: absolute"]{
+      left: 16px !important;
+      right: auto !important;    /* ← 오른쪽 고정 제거 */
+      bottom: 18% !important;
+      top: auto !important;
+      transform: none !important;
+  
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important; /* ← 왼쪽으로 */
+      text-align: left !important;
+      gap: 6px !important;
+      pointer-events: none !important;
+    }
+  
+    /* 혹시 인라인으로 right: 값이 강제된 경우 전부 덮어쓰기 */
+    .swiper-slide *[style*="right:"],
+    .hero *[style*="right:"],
+    .banner *[style*="right:"] {
+      left: 16px !important;
+      right: auto !important;
+    }
+  
+    /* 텍스트 블록도 무조건 왼쪽 정렬 */
+    .swiper-slide :is(h1,h2,p),
+    .hero :is(h1,h2,p),
+    .banner :is(h1,h2,p) {
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+  
+    /* 버튼도 왼쪽 */
+    .swiper-slide [style*="position: absolute"] :is(a,button),
+    .hero [style*="position: absolute"] :is(a,button),
+    .banner [style*="position: absolute"] :is(a,button){
+      align-self: flex-start !important;
+      pointer-events: auto !important;
+    }
 }
+

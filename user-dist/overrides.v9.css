@@ -166,5 +166,75 @@
       align-self: flex-start !important;
       pointer-events: auto !important;
     }
+
+     /* 1) 오버레이에 묻은 transform/translate 덮어쓰기 (우측으로 밀리는 원인 제거) */
+  .swiper-slide [style*="position: absolute"][style*="transform"],
+  .hero [style*="position: absolute"][style*="transform"],
+  .banner [style*="position: absolute"][style*="transform"] {
+    transform: none !important;
+  }
+
+  /* 2) 혹시 내부 래퍼에 transform으로 오른쪽으로 밀어둔 경우도 무력화 */
+  .swiper-slide [style*="position: absolute"] *[style*="transform"],
+  .hero [style*="position: absolute"] *[style*="transform"],
+  .banner [style*="position: absolute"] *[style*="transform"] {
+    transform: none !important;
+  }
+
+  /* 3) 컨테이너를 상대 위치로 보장(절대 배치를 앵커링) */
+  .hero, .banner, .full, .swiper, .swiper-container, .swiper-slide {
+    position: relative !important;
+  }
+
+  /* 4) 슬라이드 높이 뒤죽박죽 방지: 자동 높이 + 정렬 */
+  .swiper-wrapper { align-items: stretch !important; }
+  .swiper, .swiper-container, .swiper-wrapper, .swiper-slide {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: hidden !important;
+  }
+
+  /* 5) 이미지/피처 가로 100% + 블록화 (하단 큰 공백 방지) */
+  .swiper-slide img, .swiper-slide picture, .swiper-slide video,
+  .hero img, .banner img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    object-fit: cover !important;
+  }
+
+  /* 6) 텍스트 블록을 확실히 '왼쪽 하단'으로 고정 */
+  .swiper-slide [style*="position: absolute"],
+  .hero [style*="position: absolute"],
+  .banner [style*="position: absolute"]{
+    left: 16px !important;
+    right: auto !important;
+    bottom: 18% !important;
+    top: auto !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 6px !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+  }
+
+  /* 7) 버튼은 클릭 가능하게 복구 */
+  .swiper-slide [style*="position: absolute"] :is(a,button),
+  .hero [style*="position: absolute"] :is(a,button),
+  .banner [style*="position: absolute"] :is(a,button){
+    pointer-events: auto !important;
+    align-self: flex-start !important;
+  }
+
+  /* 8) 우측 정렬 인라인 스타일 강제 무효화 */
+  :is(.swiper-slide,.hero,.banner) *[style*="right:"]{ left:16px !important; right:auto !important; }
+  :is(.swiper-slide,.hero,.banner) *[style*="text-align: right"]{ text-align:left !important; }
+
+  /* 9) 제목/문단 왼쪽 정렬 보강 */
+  :is(.swiper-slide,.hero,.banner) :is(h1,h2){ text-align:left !important; }
+  :is(.swiper-slide,.hero,.banner) p{ text-align:left !important; }
 }
 

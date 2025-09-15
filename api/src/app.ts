@@ -35,6 +35,7 @@ app.use('/projects', projectRouter);
 app.use('/api', imageUploadRouter);
 app.use('/', imageUploadRouter);
 app.use(authRouter);
+app.use('/api', authRouter);
 app.use('/consultings', consultingRouter);
 app.use(noticeRouter);
 app.use(showroomRouter);

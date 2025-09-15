@@ -329,4 +329,102 @@
     height: auto !important;
     min-height: auto !important;
   }
+
+    /* 0) 컨테이너 기본값: 자동 높이/오버플로우 제거 */
+    .swiper, .swiper-container, .swiper-wrapper, .swiper-slide,
+    .hero, .banner, .full {
+      position: relative !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: hidden !important;
+    }
+    .swiper-wrapper { align-items: stretch !important; }
+  
+    /* 1) 배경 미디어: 가로 100% + 비율 유지 */
+    .swiper-slide img, .swiper-slide picture, .swiper-slide video,
+    .hero img, .banner img, .full img {
+      width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      object-fit: cover !important;
+    }
+  
+    /* 2) 오버레이를 먼저 '왼쪽 하단'으로 강제 (absolute 유지) */
+    :is(.swiper-slide,.hero,.banner,.full)
+    :is([style*="position:absolute"], [style*="position: absolute"], [class*="absolute"]) {
+      inset: auto !important;           /* ← inset으로 잡아둔 값 무력화 */
+      left: 16px !important;
+      right: auto !important;
+      bottom: 18% !important;
+      top: auto !important;
+      transform: none !important;
+  
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      text-align: left !important;
+      gap: 6px !important;
+      width: calc(100% - 32px) !important;
+      max-width: 100% !important;
+      pointer-events: none !important;  /* 텍스트만 통과 */
+      z-index: 5 !important;
+    }
+  
+    /* 3) 내부 자식에 남아있는 right/transform 싹 제거 */
+    :is(.swiper-slide,.hero,.banner,.full) [style*="right:"],
+    :is(.swiper-slide,.hero,.banner,.full) [style*="transform:"] {
+      left: 16px !important;
+      right: auto !important;
+      transform: none !important;
+    }
+  
+    /* 4) 텍스트 크기/정렬 보강 */
+    :is(.swiper-slide,.hero,.banner,.full) :is(h1,h2){
+      font-size: clamp(20px, 5.5vw, 26px) !important;
+      line-height: 1.25 !important;
+      margin: .1em 0 !important;
+      max-width: 26ch !important;
+      text-align: left !important;
+      text-shadow: none !important;
+    }
+    :is(.swiper-slide,.hero,.banner,.full) p{
+      font-size: clamp(14px, 3.8vw, 15px) !important;
+      line-height: 1.4 !important;
+      margin: .25em 0 .4em !important;
+      max-width: 32ch !important;
+      text-align: left !important;
+      text-shadow: none !important;
+    }
+  
+    /* 5) CTA/버튼은 클릭 가능 */
+    :is(.swiper-slide,.hero,.banner,.full)
+    :is([style*="position:absolute"], [class*="absolute"]) :is(a,button){
+      pointer-events: auto !important;
+      align-self: flex-start !important;
+    }
+  
+    /* ---------------------------------------------
+       6) 여전히 오른쪽/하단에 박히는 '문제 슬라이드' 안전모드:
+          오버레이를 아예 문서 흐름(static)으로 빼서
+          이미지 '아래'에 정상 출력되게 한다.
+       --------------------------------------------- */
+    :is(.swiper-slide,.hero,.banner,.full)
+    :is([style*="position:absolute"], [style*="position: absolute"], [class*="absolute"])
+    :not(.swiper-button-prev):not(.swiper-button-next):not([class*="nav"]):not([class*="arrow"]) {
+      /* 조건부 적용 트릭: 화면 오른쪽 40% 밖으로 벗어난 경우로 간주 */
+      /* (순수 CSS로 계산은 어렵기 때문에 강제 fallback으로 전환) */
+    }
+  
+    /* 강제 fallback 규칙 토글: 클래스로 제어 못하니 '무조건 적용' 버전 */
+    :is(.swiper-slide,.hero,.banner,.full)
+    :is([style*="position:absolute"], [style*="position: absolute"], [class*="absolute"])
+    :not(.swiper-button-prev):not(.swiper-button-next):not([class*="nav"]):not([class*="arrow"]) {
+      position: static !important;      /* ← 핵심: absolute 해제 */
+      margin: 12px 16px 18px !important;
+      width: auto !important;
+      pointer-events: auto !important;  /* 내부 버튼 정상 클릭 */
+    }
+  
+    /* 네비 화살표는 기존 위치 유지 */
+    .swiper-button-prev, .swiper-button-next { position: absolute !important; }
 }

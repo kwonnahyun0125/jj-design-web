@@ -30,17 +30,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ROUTERS
-app.use(rootRouter);
+app.use(authRouter);
+app.use('/api', authRouter);
 app.use('/projects', projectRouter);
 app.use('/api', imageUploadRouter);
 app.use('/', imageUploadRouter);
-app.use(authRouter);
-app.use('/api', authRouter);
 app.use('/consultings', consultingRouter);
 app.use(noticeRouter);
 app.use(showroomRouter);
 app.use('/company', companyRouter);
 app.use(furnitureRouter);
+app.use(rootRouter);
 
 // POST MIDDLEWARE
 app.use(notFoundHandler); // 생성되지 않은 엔드포인트로 접근 시 404 처리

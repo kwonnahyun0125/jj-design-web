@@ -1,0 +1,126 @@
+/* === JJ-DESIGN overrides.css (MOBILE-ONLY FINAL v9) ===
+   Path : /srv/jj/jj-design-web/user-dist/overrides.css
+   Scope: @media (max-width:768px) 내부만 적용 → PC 영향 없음
+*/
+
+@media (max-width: 768px) {
+
+  /* 0) 디버그 배지 (확인 후 제거 가능) */
+  body::after {
+    content: "overrides.css: mobile active";
+    position: fixed; right: 8px; bottom: 8px;
+    padding: 4px 6px;
+    font: 11px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color: #fff; background: rgba(0,0,0,.65);
+    border-radius: 6px; z-index: 2147483647; pointer-events: none;
+  }
+
+  /* A) 히어로/배너 오버레이: 왼쪽 정렬 + 터치 가능 영역 유지 */
+  .hero  [style*="position: absolute"][style*="z-index"],
+  .banner[style*="position: absolute"][style*="z-index"],
+  .full  [style*="position: absolute"][style*="z-index"] {
+    top: auto !important; bottom: 18% !important;
+    left: 16px !important; right: auto !important;
+    width: auto !important; transform: none !important;
+
+    display: flex !important; flex-direction: column !important;
+    align-items: flex-start !important; justify-content: flex-end !important;
+    gap: 6px !important; padding: 0 16px !important;
+
+    pointer-events: none !important; text-align: left !important;
+  }
+  .hero  [style*="position: absolute"][style*="z-index"] :is(a,button),
+  .banner[style*="position: absolute"][style*="z-index"] :is(a,button),
+  .full  [style*="position: absolute"][style*="z-index"] :is(a,button) {
+    pointer-events: auto !important; align-self: flex-start !important;
+    font-size: 15px !important; font-weight: 600 !important;
+    padding: 9px 14px !important; border-radius: 10px !important;
+  }
+
+  /* B) 텍스트 크기 */
+  .hero  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .banner[style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  .full  [style*="position: absolute"][style*="z-index"] :is(h1,h2),
+  h1[style], h2[style] {
+    font-size: clamp(20px, 5.5vw, 26px) !important;
+    line-height: 1.25 !important; margin: 0.1em 0 !important;
+    text-shadow: none !important; max-width: 26ch !important;
+  }
+  .hero  [style*="position: absolute"][style*="z-index"] p,
+  .banner[style*="position: absolute"][style*="z-index"] p,
+  .full  [style*="position: absolute"][style*="z-index"] p,
+  p[style] {
+    font-size: clamp(14px, 3.8vw, 15px) !important;
+    line-height: 1.4 !important; margin: 0.25em 0 0.4em !important;
+    text-shadow: none !important; max-width: 32ch !important;
+  }
+
+  /* C) 글로벌 보정 */
+  [style*="text-shadow"] { text-shadow: none !important; }
+
+  /* (중요) 세로 타이틀/키워드 구역 방어:
+     - 레이아웃 컨테이너에 걸린 writing-mode/rotate가 카드까지 전파되며 썸네일이 "세로 띠"로 잘리는 현상 방지
+     - 헤딩/라벨만 세로 해제, 카드 래퍼는 정상 플로우/가로 스크롤 캐러셀로 강제
+  */
+  /* 헤딩류만 세로->가로 */
+  .keywords, [data-section*="keyword"], [class*="keyword"]
+    :is(h1,h2,h3,h4,h5,h6,.heading,.title,[class*="title"],[class*="heading"]) {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    white-space: normal !important;
+  }
+
+  /* 카드 래퍼는 가로 스크롤 캐러셀로 */
+  .keywords .cards,
+  .keywords .list,
+  .keywords .grid,
+  .keywords .swiper-wrapper,
+  [data-section*="keyword"] .cards,
+  [data-section*="keyword"] .list,
+  [data-section*="keyword"] .grid,
+  [data-section*="keyword"] .swiper-wrapper {
+    display: flex !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  /* 각 카드 폭/스냅 */
+  .keywords .cards > * ,
+  .keywords .list  > * ,
+  .keywords .grid  > * ,
+  [data-section*="keyword"] .cards > * ,
+  [data-section*="keyword"] .list  > * ,
+  [data-section*="keyword"] .grid  > * {
+    min-width: 82vw !important;
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+  }
+
+  /* 슬라이더 보정 */
+  .swiper, .embla, .full { touch-action: pan-y !important; }
+  .swiper-wrapper, .embla__container { display: flex !important; }
+  .swiper-slide, .embla__slide { flex: 0 0 100% !important; min-width: 100% !important; }
+  .slider-nav, .swiper-button-prev, .swiper-button-next, .embla__button {
+    position: relative; z-index: 50 !important; pointer-events: auto;
+    opacity: 1 !important; visibility: visible !important;
+  }
+
+  /* 이미지/미디어 공통 안전장치 */
+  img, video, canvas {
+    max-width: 100% !important; height: auto !important; display: block !important;
+  }
+  .card img, .project-card img, .list-item img, .thumb, [class*="thumb"] img {
+    width: 100% !important; height: auto !important; object-fit: cover !important;
+  }
+
+  /* 카드/프로젝트 제목 줄바꿈 */
+  .card h3, .project-card h3, .list-item h3,
+  .card .title, .project-card .title {
+    font-size: clamp(16px, 4.5vw, 20px) !important;
+    white-space: normal !important; word-break: keep-all !important;
+  }
+
+  /* 푸터·연락처 블록 간격 */
+  footer, .footer { line-height: 1.5 !important; }
+}

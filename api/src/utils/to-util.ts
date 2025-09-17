@@ -27,8 +27,12 @@ export const toKeyword = (keyword: string | undefined): Keyword | undefined => {
       return Keyword.HOUSE;
     case 'COMMERCIAL':
       return Keyword.COMMERCIAL;
+    case 'OFFICE':
+      return Keyword.OFFICE;
     case 'NEW':
       return Keyword.NEW;
+    case 'REMODELING':
+      return Keyword.REMODELING;
     default:
       return undefined;
   }
@@ -51,10 +55,12 @@ export const toSizeRanges = (
   if (!pyungArray || pyungArray.length === 0) {
     return undefined;
   }
+  // pyungArray가 배열이 아니면 배열로 변환
+  const arr = Array.isArray(pyungArray) ? pyungArray : [pyungArray];
 
   const ranges: { size: { gte?: number; lt?: number } }[] = [];
 
-  pyungArray.forEach((pyung) => {
+  arr.forEach((pyung) => {
     switch (pyung) {
       case '20':
         ranges.push({ size: { gte: 20, lt: 30 } });

@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   api:
     build: ./api
-    env_file:
-      - ./api/.env
     container_name: api
     restart: always
+    env_file:
+      - ./api/.env
     environment:
       - NODE_ENV=production
       - PORT=3001
@@ -32,6 +30,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - api
+
   db:
     image: postgres:15
     restart: always

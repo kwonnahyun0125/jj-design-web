@@ -4,31 +4,69 @@ import { uploadImages } from '../controllers/image-upload-controller';
 
 const router = Router();
 
-// 메모리 스토리지 + 업로드 제한(사이즈/개수)
+/**
+ * Multer 설정: 메모리 저장 + 업로드 제한
+ * - nginx client_max_body_size(50M)와 맞춤
+ * - 동시에 최대 20개까지 허용
+ */
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 50 * 1024 * 1024, // ✅ 50MB (nginx client_max_body_size와 맞춤)
-    files: 20, // 필요시 조정
+    fileSize: 50 * 1024 * 1024, // 50MB
+    files: 20,
   },
 });
 
 /**
- * 마운트 방식에 따라 라우트 경로 선택:
- * - app.use('/api', router) 로 마운트했다면 → router.post('/images/upload', ...)
- * - app.use('/', router) 등 접두어가 없다면 → router.post('/api/images/upload', ...)
- *
- * 현재 nginx가 /api 접두어를 유지해 프록시하므로,
- * 보통은 app.use('/api', router) + 아래처럼 '/images/upload'를 쓰면 /api/images/upload로 매칭됩니다.
+ * 프론트 호환:
+ * - 현재 프론트는 필드명을 'images'로 보내고 있음
+ * - 권장 필드명은 'file'
+ * 둘 다 수용하기 위해 fields로 받고, 컨트롤러에 넘기기 전에 배열로 평탄화한다.
  */
+const acceptFields = upload.fields([
+  { name: 'file', maxCount: 20 },
+  { name: 'images', maxCount: 20 },
+]);
 
-// 단일/다중 업로드: 프론트는 FormData에 'file' 이름으로 append 하세요.
-router.post('/images/upload', upload.array('file', 20), uploadImages);
+/** fields 형태(req.files: Record<string, File[]>)를 배열 형태로 평탄화 */
+function flattenFiles(req: Request, _res: Response, next: NextFunction) {
+  const anyReq = req as Request & {
+    files?: Express.Multer.File[] | Record<string, Express.Multer.File[]>;
+    file?: Express.Multer.File;
+  };
 
-// Multer 에러를 400으로 명확히 내려서 원인(사이즈 초과 등) 바로 파악
+  // 이미 array 형태면 그대로 통과
+  if (Array.isArray(anyReq.files)) return next();
+
+  const buckets = (anyReq.files || {}) as Record<string, Express.Multer.File[]>;
+  const list: Express.Multer.File[] = [];
+
+  for (const k of ['file', 'images']) {
+    if (Array.isArray(buckets[k])) list.push(...buckets[k]);
+  }
+
+  // 단일 업로드(req.file) 대응
+  if (!list.length && anyReq.file) list.push(anyReq.file as Express.Multer.File);
+
+  anyReq.files = list;
+  return next();
+}
+
+/**
+ * 라우트 경로 주의:
+ * - app.use('/api', router) 로 마운트되어 있다면 아래 경로로 /api/images/upload 가 완성됨.
+ * - 루트에 마운트하면 '/api/images/upload'로 바꿔주세요.
+ */
+router.post('/images/upload', acceptFields, flattenFiles, uploadImages);
+
+/** Multer 에러(사이즈 초과 등)는 400으로 명확히 반환 */
 router.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
   if (err instanceof MulterError) {
-    return res.status(400).json({ success: false, code: err.code, message: err.message });
+    return res.status(400).json({
+      success: false,
+      code: err.code, // 예: LIMIT_FILE_SIZE, LIMIT_FILE_COUNT
+      message: err.message,
+    });
   }
   return next(err);
 });

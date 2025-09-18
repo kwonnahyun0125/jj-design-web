@@ -7,9 +7,21 @@ import { uploadBufferToS3, toPublicUrl } from '../config/s3';
 
 export const uploadImages: RequestHandler = async (req, res, next) => {
   try {
-    const files = req.files as Express.Multer.File[];
+    // ① 라우터에서 flattenFiles를 못 쓴 경우 대비(Record<string, File[]> 형태도 수용)
+    let files: Express.Multer.File[] = Array.isArray(req.files)
+      ? (req.files as Express.Multer.File[])
+      : Object.values(
+          (req.files as Record<string, Express.Multer.File[]> | undefined) ?? {}
+        ).flat();
+
     if (!files || files.length === 0) {
       throw new BadRequestError('파일이 존재하지 않습니다.');
+    }
+
+    // ② 이미지 MIME만 허용(원하면 제거 가능)
+    files = files.filter((f) => /^image\//.test(f.mimetype));
+    if (files.length === 0) {
+      throw new BadRequestError('이미지 파일만 업로드할 수 있습니다.');
     }
 
     const urls = await Promise.all(
@@ -17,15 +29,17 @@ export const uploadImages: RequestHandler = async (req, res, next) => {
         const { originalname, buffer, mimetype } = file;
 
         const ext = path.extname(originalname) || '';
-        const base = path.basename(originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_') || 'file';
+        const base =
+          path
+            .basename(originalname, ext)
+            .normalize('NFKD')
+            .replace(/[^a-zA-Z0-9_.-]/g, '_') || 'file';
         const key = `images/${base}_${Date.now()}_${randomUUID()}${ext}`;
 
-        // S3 업로드 (공개 읽기)
-        await uploadBufferToS3(key, buffer, mimetype);
+        // S3 업로드: ❗ ACL 사용 금지 (Block Public Access와 충돌)
+        await uploadBufferToS3(key, buffer, mimetype); // 내부에서 SSE(AES256)만 지정 권장
 
-        // 만료 없는 퍼블릭 URL 반환
-        const url = toPublicUrl(key);
-        return url;
+        return toPublicUrl(key); // https://<bucket>.s3.<region>.amazonaws.com/<key>
       })
     );
 

@@ -50,18 +50,18 @@ export const toLineup = (lineup: string | undefined): Lineup | undefined => {
 };
 
 export const toSizeRanges = (
-  pyungArray: Pyung[] | Pyung | undefined
-): { AND: { size: { gte?: number; lt?: number } }[] } | undefined => {
-  if (!pyungArray) return undefined;
+  pyungArray: Pyung[] | undefined
+): { OR: { size: { gte?: number; lt?: number } }[] } | undefined => {
+  if (!pyungArray || pyungArray.length === 0) {
+    return undefined;
+  }
+  // pyungArray가 배열이 아니면 배열로 변환
   const arr = Array.isArray(pyungArray) ? pyungArray : [pyungArray];
-  if (arr.length === 0) return undefined;
 
   const ranges: { size: { gte?: number; lt?: number } }[] = [];
 
   arr.forEach((pyung) => {
-    const value = typeof pyung === 'string' ? pyung.toUpperCase() : pyung;
-
-    switch (value) {
+    switch (pyung) {
       case '20':
         ranges.push({ size: { gte: 20, lt: 30 } });
         break;
@@ -84,5 +84,5 @@ export const toSizeRanges = (
     }
   });
 
-  return ranges.length > 0 ? { AND: ranges } : undefined;
+  return ranges.length > 0 ? { OR: ranges } : undefined;
 };

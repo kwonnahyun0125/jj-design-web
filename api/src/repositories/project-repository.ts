@@ -1,4 +1,4 @@
-import { Keyword } from '@prisma/client';
+import { Keyword, Prisma } from '@prisma/client';
 import prisma from '../config/db';
 import {
   Category,
@@ -72,31 +72,29 @@ export const getProjectListWithFilter = async (query: GetProjectListQuery) => {
   const { category, page = 1, size = 10, keyword, search, lineup, pyung } = query;
 
   const categoryEnum = category ? toCategory(category) : undefined;
-
   const keywordEnum = toKeyword(keyword);
   const lineupEnum = toLineup(lineup);
   const sizeCondition = toSizeRanges(pyung);
 
-  const where = {
-    isDeleted: false,
-    ...(keywordEnum ? { keywords: { has: keywordEnum } } : {}),
-    ...(categoryEnum ? { category: categoryEnum } : {}), // category 있을 때만 필터
-    ...(search
-      ? {
-          OR: [
-            { title: { contains: search, mode: 'insensitive' as const } },
-            { description: { contains: search, mode: 'insensitive' as const } },
-          ],
-        }
-      : {}),
-    ...(lineupEnum ? { lineup: lineupEnum } : {}),
-    ...(sizeCondition ? sizeCondition : {}),
-  };
+  const andConditions: Prisma.ProjectWhereInput[] = [{ isDeleted: false }];
+
+  if (keywordEnum) andConditions.push({ keywords: { has: keywordEnum } });
+  if (categoryEnum) andConditions.push({ category: categoryEnum });
+  if (lineupEnum) andConditions.push({ lineup: lineupEnum });
+  if (sizeCondition && sizeCondition.OR) andConditions.push({ OR: sizeCondition.OR });
+  if (search) {
+    andConditions.push({
+      OR: [
+        { title: { contains: search, mode: 'insensitive' as const } },
+        { description: { contains: search, mode: 'insensitive' as const } },
+      ],
+    });
+  }
+
+  const where = { AND: andConditions };
 
   const [totalCount, list] = await Promise.all([
-    prisma.project.count({
-      where,
-    }),
+    prisma.project.count({ where }),
     prisma.project.findMany({
       where,
       orderBy: { createdAt: 'desc' },

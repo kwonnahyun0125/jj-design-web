@@ -48,23 +48,42 @@
 ---
 
 ## 프로젝트 구조 예시
+
 📦 JJ-DESIGN-WEB
+
 ┣ 📂 .github # GitHub 설정 및 워크플로우
+
 ┣ 📂 .husky # Git hooks 설정
+
 ┣ 📂 admin-dist # 관리자 페이지 빌드 결과물
+
 ┣ 📂 api # API 서버 코드
+
 ┣ 📂 aws # AWS 관련 설정 파일 (EC2, S3 등)
+
 ┣ 📂 dist # 빌드된 서버 코드
+
 ┣ 📂 nginx # Nginx 설정 파일 (리버스 프록시, 배포 설정)
+
 ┣ 📂 node_modules # 의존성 패키지
+
 ┣ 📂 prisma # Prisma 스키마 및 마이그레이션
+
 ┣ 📂 src # 주요 서버 소스코드
+
 ┣ 📂 user-dist # 사용자용 프론트 빌드 결과물
+
 ┣ 📜 .env # 환경 변수 파일
+
 ┣ 📜 .gitignore
+
 ┣ 📜 docker-compose.yml # Docker 서비스 정의 파일
+
 ┣ 📜 Dockerfile # Docker 빌드 설정
+
 ┣ 📜 README.md
+
+---
 
 ## 개발 사이트
 https://jj-design.co.kr
